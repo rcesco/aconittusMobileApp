@@ -7,6 +7,7 @@ import {
   TextInput,
   PermissionsAndroid,
   Platform,
+  Linking,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from '../../../services/api';
@@ -111,7 +112,6 @@ export default function Checklist({route, navigation}) {
   });
 
   async function handleResponses(response, date, string, id) {
-    console.log(response, string);
     if (date !== null) {
       setDates(prevDates => ({...prevDates, [id]: date}));
     }
@@ -139,6 +139,23 @@ export default function Checklist({route, navigation}) {
     }));
   }
 
+  const checkLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (!granted) {
+        requestLocationPermission();
+      } else {
+        getCurrentLocation();
+      }
+    } else {
+      // No iOS, solicitamos a permissão diretamente usando o próprio Geolocation
+      Geolocation.requestAuthorization();
+      getCurrentLocation();
+    }
+  };
+
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -152,24 +169,31 @@ export default function Checklist({route, navigation}) {
             buttonPositive: 'OK',
           },
         );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          getCurrentLocation();
+        } else {
+          showPermissionAlert();
+        }
       } catch (err) {
         console.warn(err);
-        return;
       }
+    } else {
+      // No iOS, a permissão é solicitada automaticamente pela Geolocation API.
+      getCurrentLocation();
     }
-    getCurrentLocation();
   };
 
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
-        console.log(position?.coords.latitude);
-        setLatitude(position?.coords.latitude);
-        setLongitude(position?.coords.longitude);
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
       },
       error => {
-        // Verificar o erro
         console.error(error);
+        if (Platform.OS === 'ios' && error.code === 1) {
+          showPermissionAlert();
+        }
       },
       {
         enableHighAccuracy: true,
@@ -179,9 +203,16 @@ export default function Checklist({route, navigation}) {
     );
   };
 
-  function handleSucess() {
-    navigation.navigate('Home');
-  }
+  const showPermissionAlert = () => {
+    Alert.alert(
+      'Permissão de Localização',
+      'As permissões de localização estão desativadas. Deseja abrir as configurações para ativá-las?',
+      [
+        {text: 'Cancelar', style: 'cancel'},
+        {text: 'Abrir Configurações', onPress: () => Linking.openSettings()},
+      ],
+    );
+  };
 
   async function handlePostResponses() {
     const postParams = {
@@ -257,7 +288,7 @@ export default function Checklist({route, navigation}) {
 
   useEffect(() => {
     requestLocationPermission();
-  });
+  }, []);
 
   return (
     <Background>

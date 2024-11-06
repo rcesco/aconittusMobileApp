@@ -48,7 +48,6 @@ export default function Profile() {
 
   function handleVersion() {
     const version = DeviceInfo.getVersion();
-    console.log(version);
     Alert.alert(`Sua Versão do Aplicativo é ${version}`);
   }
 

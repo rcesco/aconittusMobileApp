@@ -20,7 +20,6 @@ export function* signIn({payload}) {
       email,
       password,
     });
-
     if (response.status === 200) {
       const {user, token} = response.data;
 
