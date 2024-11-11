@@ -60,8 +60,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Este aplicativo precisa da sua permissão para rastrear dados de atividade com o objetivo de melhorar sua experiência e personalizar o conteúdo exibido.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Precisamos da sua localização para fornecer um serviço personalizado.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

@@ -1,8 +1,6 @@
 import {Alert} from 'react-native';
 import {takeLatest, call, put, all} from 'redux-saga/effects';
-
-import Api from '../../../services/api';
-
+import Api, {updateApiBaseURL} from '../../../services/api';
 import {
   signInSuccess,
   signFailure,
@@ -14,15 +12,38 @@ import {
 
 export function* signIn({payload}) {
   try {
-    const {email, password} = payload;
+    const {email, password, codeBranch} = payload;
 
+    // Defina a porta com base no codeBranch
+    let port;
+    switch (codeBranch) {
+      case '3002':
+        port = 3332;
+        break;
+      case '3004':
+        port = 3337;
+        break;
+      case '3000':
+        port = 3330;
+        break;
+      default:
+        port = 3331; // Porta padrão
+    }
+
+    // Atualize a baseURL da API com a nova porta
+    updateApiBaseURL(port);
+
+    // Faz a chamada de login para a API
     const response = yield call(Api.post, 'session/app', {
       email,
       password,
     });
+
+    // Verifica se a resposta foi bem-sucedida
     if (response.status === 200) {
       const {user, token} = response.data;
 
+      // Configura os cabeçalhos para autenticação
       Api.defaults.headers.user = user.iduser;
       Api.defaults.headers.Authorization = `Bearer ${token}`;
       Api.defaults.headers.person = user.person_id;
@@ -33,7 +54,6 @@ export function* signIn({payload}) {
     }
   } catch (err) {
     Alert.alert('Falha de Autenticação', 'Verifique seu Usuário/Senha!');
-
     yield put(signFailure());
   }
 }
@@ -92,11 +112,9 @@ export function setAuthParams({payload}) {
   }
 
   const {user, id_user} = payload.auth;
-  //const {id} = payload.user.profile;
   if (user && id_user) {
     Api.defaults.headers.user = user;
     Api.defaults.headers.token = id_user;
-    //Api.defaults.headers.person = id;
   }
 }
 

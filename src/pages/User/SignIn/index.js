@@ -38,6 +38,7 @@ export default function SignIn({navigation}) {
   const netInfo = useNetInfo();
 
   function handleSignIn() {
+    //console.log(username, password, codeBranch);
     dispatch(signInRequest(username, password, codeBranch));
   }
 

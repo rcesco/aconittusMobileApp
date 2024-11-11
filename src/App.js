@@ -6,10 +6,6 @@ import {NativeModules, Platform} from 'react-native';
 export default function App() {
   const {AppDelegate} = NativeModules;
 
-  useEffect(() => {
-    requestTrackingPermission();
-  }, []);
-
   const requestTrackingPermission = async () => {
     if (Platform.OS === 'ios') {
       try {
