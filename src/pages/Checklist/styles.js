@@ -31,18 +31,19 @@ export const TopInfo = styled.View`
 `;
 
 export const ChecklistIcon = styled.View`
-  background-color: #4477ce;
+  background-color: #0078f1;
   border-style: solid;
   border-radius: 30px;
   border: 12px;
-  border-color: #4477ce;
+  border-color: #0078f1;
   align-self: flex-start;
 `;
 
 export const Infos = styled.View`
   flex: 1;
   justify-content: flex-start;
-  margin-top: 15px;
+  margin-top: 0px;
+  margin-bottom: 20px;
 `;
 
 export const Name = styled.Text`
