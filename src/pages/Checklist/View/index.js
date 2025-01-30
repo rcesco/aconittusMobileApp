@@ -93,7 +93,7 @@ export default function Checklist({route, navigation}) {
 
   async function handleCompositions() {
     const response = await Api.get(
-      '/vehicle_composition/get_by_dates/2023-08-11/2023-08-24',
+      '/vehicle_composition/get_by_dates/2023-08-11/2025-08-24',
     );
 
     const {data} = response.data;

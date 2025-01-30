@@ -22,7 +22,6 @@ export const Dss = styled.TouchableOpacity`
   margin: 20px 15px 0px 15px;
   border-radius: 15px;
   min-height: 170px;
-  flex: 1;
 `;
 
 export const Name = styled.Text`

@@ -47,6 +47,7 @@ export function* signIn({payload}) {
       Api.defaults.headers.user = user.iduser;
       Api.defaults.headers.Authorization = `Bearer ${token}`;
       Api.defaults.headers.person = user.person_id;
+      Api.defaults.headers.operation_types = user.operation_types;
 
       yield put(signInSuccess(user.name, user.iduser, token, user.person_id));
     } else {
