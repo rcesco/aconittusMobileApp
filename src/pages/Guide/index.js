@@ -24,7 +24,7 @@ const Guide = ({navigation}) => {
   }
 
   async function handleListing() {
-    const response = await Api.get('/guide');
+    const response = await Api.get('/guide/listForApp');
 
     const {data} = response.data;
 

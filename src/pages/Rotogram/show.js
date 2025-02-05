@@ -58,7 +58,7 @@ const ShowRotogram = ({route, navigation}) => {
   };
 
   const source = {
-    uri: `http://77.37.41.21:3330/api/rotogram/viewfile/${route.params.info.file}`,
+    uri: `${Api.defaults.baseURL}rotogram/viewfile/${route.params.info.file}`,
     cache: false,
     headers: customHeaders,
   };

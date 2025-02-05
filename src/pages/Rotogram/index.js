@@ -25,7 +25,7 @@ const Rotograms = ({navigation}) => {
   }
 
   async function handleListing() {
-    const response = await Api.get('/rotogram');
+    const response = await Api.get('/rotogram/listForApp');
     const {data} = response.data;
     setRotogram(data);
   }

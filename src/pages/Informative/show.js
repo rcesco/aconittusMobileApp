@@ -31,7 +31,7 @@ const ShowInformatives = ({route, navigation}) => {
   };
 
   const source = {
-    uri: `http://77.37.41.21:3330/api/informative/viewfile/${route.params.info.file}`,
+    uri: `${Api.defaults.baseURL}informative/viewfile/${route.params.info.file}`,
     cache: false,
     headers: customHeaders,
   };

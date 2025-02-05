@@ -25,7 +25,7 @@ const Informatives = ({navigation}) => {
   }
 
   async function handleListing() {
-    const response = await Api.get('/informative');
+    const response = await Api.get('/informative/listForApp');
 
     const {data} = response.data;
 

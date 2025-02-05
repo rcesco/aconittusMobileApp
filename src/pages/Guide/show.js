@@ -54,7 +54,7 @@ const ShowGuide = ({route, navigation}) => {
   };
 
   const source = {
-    uri: `http://77.37.41.21:3330/api/guide/viewfile/${route.params.info.file}`,
+    uri: `${Api.defaults.baseURL}guide/viewfile/${route.params.info.file}`,
     cache: true,
     headers: customHeaders,
   };

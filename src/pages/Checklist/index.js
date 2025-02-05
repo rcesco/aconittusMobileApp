@@ -28,7 +28,7 @@ export default function ChecklistList({navigation}) {
     const netInfoState = await NetInfo.fetch();
     const isConnected = netInfoState.isConnected;
     if (isConnected) {
-      const response = await Api.get('/checklist');
+      const response = await Api.get('/checklist/listForApp');
 
       const {data} = response.data;
 
