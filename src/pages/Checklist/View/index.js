@@ -38,6 +38,7 @@ import {
 export default function Checklist({route, navigation}) {
   const [idChecklist, setIdChecklist] = useState('');
   const [questions, setQuestions] = useState([]);
+  const [disableForm, setDisableForm] = useState(false);
   const [responses, setResponses] = useState([]);
   const [latitude, setLatitude] = useState([]);
   const [longitude, setLongitude] = useState([]);
@@ -215,46 +216,55 @@ export default function Checklist({route, navigation}) {
   };
 
   async function handlePostResponses() {
-    const postParams = {
-      idChecklist,
-      responses,
-      latitude,
-      longitude,
-      composition,
-    };
+    if (!disableForm) {
+      setDisableForm(true);
 
-    let fullResponse = true;
+      const postParams = {
+        idChecklist,
+        responses,
+        latitude,
+        longitude,
+        composition,
+      };
 
-    responses.map(item => {
-      if (item.choise === 0) {
-        fullResponse = false;
-      }
-      if (item.string === -999) {
-        fullResponse = false;
-      }
-      return true;
-    });
+      let fullResponse = true;
 
-    if (fullResponse) {
-      try {
-        const response = await Api.post(
-          '/checklist/postResponsesApp',
-          postParams,
-        );
-
-        if (response.status === 200) {
-          Alert.alert('', 'Obrigado por Realizar este Checklist!', [
-            {text: 'OK'},
-          ]);
-          handleSucess();
+      responses.map(item => {
+        if (item.choise === 0) {
+          fullResponse = false;
         }
-      } catch (error) {
-        Alert.alert(
-          'Ocorreu um Erro ao enviar o Checklist reporte ao Administrador!',
-        );
+        if (item.string === -999) {
+          fullResponse = false;
+        }
+        return true;
+      });
+
+      if (fullResponse) {
+        try {
+          const response = await Api.post(
+            '/checklist/postResponsesApp',
+            postParams,
+          );
+
+          if (response.status === 200) {
+            Alert.alert('', 'Obrigado por Realizar este Checklist!', [
+              {text: 'OK'},
+            ]);
+            navigation.navigate('ChecklistList');
+            setDisableForm(false);
+          }
+        } catch (error) {
+          Alert.alert(
+            'Ocorreu um Erro ao enviar o Checklist reporte ao Administrador!',
+          );
+          setDisableForm(false);
+        }
+      } else {
+        Alert.alert('Você Precisa responder Todas as Questões');
+        setDisableForm(false);
       }
     } else {
-      Alert.alert('Você Precisa responder Todas as Questões');
+      Alert.alert('Aguarde Seu checklist está sendo enviado');
     }
   }
 
@@ -470,7 +480,8 @@ export default function Checklist({route, navigation}) {
         <SubmitQuestions
           onPress={() => {
             handlePostResponses();
-          }}>
+          }}
+          loading={disableForm}>
           Enviar Respostas
         </SubmitQuestions>
       </Container>
