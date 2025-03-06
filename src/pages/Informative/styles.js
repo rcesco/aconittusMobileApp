@@ -1,10 +1,16 @@
 import styled from 'styled-components';
 import Button from '../../components/Button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Input from '../../components/Input';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
+const statusBarMargin = isIOS ? 60 : 0;
 
 export const Background = styled.ScrollView`
   flex: 1;
   background-color: #1583f2;
+  padding-top: ${statusBarMargin}px;
 `;
 
 export const Container = styled.View`
@@ -21,11 +27,9 @@ export const List = styled.FlatList.attrs({
 export const InformativeContainer = styled.TouchableOpacity`
   align-items: center;
   margin: 20px 15px 0px 15px;
-  border-radius: 15px;
-  min-height: 100px;
-  padding: 0px;
   background-color: #fff;
-  border-style: solid;
+  border-radius: 15px;
+  min-height: 120px;
 `;
 
 export const Name = styled.Text`
@@ -46,14 +50,12 @@ export const Date = styled.Text`
 `;
 
 export const InfoIcon = styled.View`
-  background-color: #164888;
+  background-color: #f4a261;
   border-style: solid;
-  border-radius: 15px;
-  border: 10px;
-  border-color: #164888;
-  align-self: center;
-  min-height: 100px;
-  min-width: 100px;
+  border-radius: 30px;
+  border: 12px;
+  border-color: #f4a261;
+  align-self: flex-start;
 `;
 
 export const VideoButton = styled(Button)`
@@ -64,7 +66,7 @@ export const VideoButton = styled(Button)`
 export const TopInfo = styled.View`
   flex: 1;
   align-self: flex-start;
-  margin: 0px 0px 0px;
+  margin: 25px 25px 25px;
   flex-direction: row;
   justify-content: flex-start;
 `;
@@ -103,4 +105,10 @@ export const ButtonClearText = styled.Text`
   color: #fff;
   font-size: 14px;
   text-align: center;
+`;
+
+export const FormInput = styled(Input)`
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 10px;
 `;

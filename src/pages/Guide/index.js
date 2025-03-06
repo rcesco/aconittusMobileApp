@@ -14,11 +14,12 @@ import {
   Date,
   InfoIcon,
   Background,
+  FormInput,
 } from './styles';
 
 const Guide = ({navigation}) => {
   const [guide, setGuide] = useState([]);
-
+  const [search, setSearch] = useState('');
   function handleGuide(info) {
     navigation.navigate('ShowGuide', {info});
   }
@@ -31,6 +32,12 @@ const Guide = ({navigation}) => {
     setGuide(data);
   }
 
+  const filteredGuide = guide
+    ? guide.filter(item =>
+        item.description.toLowerCase().includes(search.toLowerCase()),
+      )
+    : [];
+
   useEffect(() => {
     const focused = navigation.addListener('focus', () => {
       handleListing();
@@ -40,9 +47,14 @@ const Guide = ({navigation}) => {
 
   return (
     <Background>
+      <FormInput
+        placeholder="Pesquisar"
+        value={search}
+        onChangeText={setSearch}
+      />
       <Container>
         <List
-          data={guide}
+          data={filteredGuide}
           keyExtractor={info => info.title}
           renderItem={({item}) => (
             <GuideContainer onPress={() => handleGuide(item)}>

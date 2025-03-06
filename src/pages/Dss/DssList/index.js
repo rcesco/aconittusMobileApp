@@ -50,7 +50,7 @@ export default function DssList({navigation}) {
           renderItem={({item}) => (
             <Dss
               onPress={() => handleDss(item)}
-              style={{backgroundColor: item.seen ? '#bcd2ee' : '#FFF'}}>
+              style={{backgroundColor: item.seen ? '#FFF' : '#FFF'}}>
               <TopInfo>
                 <DssIcon>
                   <Icon name="video-camera" size={30} color="#FFF" />

@@ -12,7 +12,7 @@ import {
 export default function HomeButton({text, icon, color, ...rest}) {
   const styles = StyleSheet.create({
     button: {
-      backgroundColor: '#0078F1',
+      backgroundColor: color,
     },
     text: {
       color: '#fff',

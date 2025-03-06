@@ -8,6 +8,7 @@ import {
   PermissionsAndroid,
   Platform,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from '../../../services/api';
@@ -15,6 +16,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from 'react-native-geolocation-service';
+import DeviceInfo from 'react-native-device-info';
 
 import {
   Container,
@@ -33,6 +35,11 @@ import {
   ModalButtonSelect,
   Background,
   ResponseText,
+  SelectData,
+  RadioContainer,
+  RadioText,
+  StyledRadioButton,
+  InnerCircle,
 } from './styles';
 
 export default function Checklist({route, navigation}) {
@@ -51,6 +58,7 @@ export default function Checklist({route, navigation}) {
   const [radioResponses, setRadioResponses] = useState({});
   const [ip, setIp] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState({});
+  const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
   async function initQuestions() {
     const netInfoState = await NetInfo.fetch();
@@ -376,10 +384,24 @@ export default function Checklist({route, navigation}) {
                   }
                   value={radioResponses[item.idchecklist_question] || null}>
                   {item.answers.map(i => (
-                    <View key={i.value}>
-                      <ResponseText>{i.label}</ResponseText>
-                      <RadioButton value={i.value} />
-                    </View>
+                    <RadioContainer
+                      key={i.value}
+                      onPress={() =>
+                        handleResponses(
+                          i.value,
+                          null,
+                          null,
+                          item.idchecklist_question,
+                        )
+                      }>
+                      <StyledRadioButton
+                        value={i.value}
+                        color={'#dddddd'}
+                        uncheckedColor={'#FFFFFF'}>
+                        <InnerCircle />
+                      </StyledRadioButton>
+                      <RadioText>{i.label}</RadioText>
+                    </RadioContainer>
                   ))}
                 </RadioButton.Group>
               ) : null}
@@ -390,12 +412,12 @@ export default function Checklist({route, navigation}) {
                   onChangeText={e =>
                     handleResponses(-1, null, e, item.idchecklist_question)
                   }
+                  multiline={true}
                 />
               ) : null}
               {item.type === 'date' ? (
                 <View>
-                  <TextInput
-                    style={{borderWidth: 1, padding: 10, marginVertical: 10}}
+                  <FormInput
                     value={
                       dates[item.idchecklist_question]?.toLocaleDateString() ||
                       ''
@@ -403,16 +425,17 @@ export default function Checklist({route, navigation}) {
                     placeholder="Não Selecionado Data"
                     editable={false}
                   />
-                  <Button
+                  <SelectData
                     title="Selecionar Data"
-                    onPress={() => showDatepicker(item.idchecklist_question)}
-                  />
+                    onPress={() => showDatepicker(item.idchecklist_question)}>
+                    Selecionar Data
+                  </SelectData>
                   {showDatePicker[item.idchecklist_question] && (
                     <DateTimePicker
                       testID={item.idchecklist_question}
                       value={dates[item.idchecklist_question] || new Date()}
                       mode="date"
-                      display="default"
+                      display={isIOS ? 'calendar' : 'default'}
                       onChange={(e, selectedDate) =>
                         handleResponses(
                           null,
@@ -427,8 +450,7 @@ export default function Checklist({route, navigation}) {
               ) : null}
               {item.type === 'hour' ? (
                 <View>
-                  <TextInput
-                    style={{borderWidth: 1, padding: 10, marginVertical: 10}}
+                  <FormInput
                     value={
                       dates[item.idchecklist_question]
                         ? dates[item.idchecklist_question].toLocaleTimeString(
@@ -443,10 +465,11 @@ export default function Checklist({route, navigation}) {
                     placeholder="Não Selecionado Hora"
                     editable={false}
                   />
-                  <Button
+                  <SelectData
                     title="Selecionar Hora"
-                    onPress={() => showDatepicker(item.idchecklist_question)}
-                  />
+                    onPress={() => showDatepicker(item.idchecklist_question)}>
+                    Selecionar Hora
+                  </SelectData>
                   {showDatePicker[item.idchecklist_question] && (
                     <DateTimePicker
                       testID={item.idchecklist_question}
@@ -472,8 +495,16 @@ export default function Checklist({route, navigation}) {
                   onChangeText={e =>
                     handleResponses(null, null, e, item.idchecklist_question)
                   }
+                  multiline={true}
                 />
               ) : null}
+              <View
+                style={{
+                  borderBottomColor: '#FFF',
+                  borderBottomWidth: 0.6,
+                  marginVertical: 10,
+                }}
+              />
             </ContainerQuestion>
           )}
         />

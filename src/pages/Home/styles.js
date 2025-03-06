@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
+const statusBarMargin = isIOS ? 60 : 0;
 
 export const Container = styled.ScrollView`
   flex: 1;
   background-color: #1583f2;
+  padding-top: ${statusBarMargin}px;
 `;
 
 export const ContainerImage = styled.View`

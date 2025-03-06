@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../../services/api';
+import {format, parseISO} from 'date-fns';
+import {ptBR} from 'date-fns/locale';
 
 import {
   Container,
@@ -38,15 +40,20 @@ const Rotograms = ({navigation}) => {
   }, [navigation]);
 
   // Função para filtrar os rotogramas com base na pesquisa
-  const filteredRotogram = rotogram.filter(item =>
-    item.description.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filteredRotogram = rotogram
+    ? rotogram.filter(item =>
+        item.description.toLowerCase().includes(search.toLowerCase()),
+      )
+    : [];
 
   return (
     <Background>
       <Container>
-        <Question>Pesquisa</Question>
-        <FormInput value={search} onChangeText={setSearch} />
+        <FormInput
+          placeholder="Pesquisar"
+          value={search}
+          onChangeText={setSearch}
+        />
         <List
           data={filteredRotogram}
           keyExtractor={info => info.title}
@@ -58,7 +65,11 @@ const Rotograms = ({navigation}) => {
                 </InfoIcon>
                 <Infos>
                   <Name>{item.description}</Name>
-                  <Date>{item.date}</Date>
+                  <Date>
+                    {format(parseISO(item.date), 'dd/MM/yyyy', {
+                      locale: ptBR,
+                    })}
+                  </Date>
                 </Infos>
               </TopInfo>
             </RotogramContainer>

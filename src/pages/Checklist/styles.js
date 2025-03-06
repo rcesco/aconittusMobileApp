@@ -1,10 +1,15 @@
 import styled from 'styled-components';
 import Input from '../../components/Input';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
+const statusBarMargin = isIOS ? 60 : 0;
 
 export const Container = styled.View`
   flex: 1;
   padding: 0px;
   background-color: #1583f2;
+  padding-top: ${statusBarMargin}px;
 `;
 
 export const List = styled.FlatList.attrs({
@@ -31,11 +36,11 @@ export const TopInfo = styled.View`
 `;
 
 export const ChecklistIcon = styled.View`
-  background-color: #0078f1;
+  background-color: #36ba98;
   border-style: solid;
   border-radius: 30px;
   border: 12px;
-  border-color: #0078f1;
+  border-color: #36ba98;
   align-self: flex-start;
 `;
 
@@ -55,5 +60,7 @@ export const Name = styled.Text`
 `;
 
 export const FormInput = styled(Input)`
+  margin-right: 20px;
+  margin-left: 20px;
   margin-bottom: 10px;
 `;

@@ -5,6 +5,9 @@ import Api from '../../services/api';
 import Pdf from 'react-native-pdf';
 
 import {ButtonClear, ButtonClearText} from './styles';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
 const ShowInformatives = ({route, navigation}) => {
   //console.tron.log(Api.defaults.headers.Authorization);
@@ -13,8 +16,9 @@ const ShowInformatives = ({route, navigation}) => {
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      marginTop: 25,
+      marginTop: isIOS ? 60 : 25,
     },
+    melhoria: {marginTop: isIOS ? 60 : 25},
     pdf: {
       flex: 1,
       width: Dimensions.get('window').width,

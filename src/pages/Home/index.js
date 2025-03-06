@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {Alert, Image, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {signOut} from '../../store/modules/auth/actions';
+import VersionCheck from 'react-native-version-check';
 
 import Api from '../../services/api';
 
@@ -36,7 +37,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     handleSignIn();
-  });
+  }, []);
 
   function handleDss() {
     navigation.navigate('DssList');
@@ -83,13 +84,13 @@ export default function Home({navigation}) {
           onPress={() => handleChecklist()}
           icon="clipboard-list"
           text="Checklists"
-          color="#35A29F"
+          color="#36BA98"
         />
         <HomeButton
           onPress={() => handleDss()}
           icon="message-video"
           text="DSS"
-          color="#FFE5F1"
+          color="#E9C46A"
         />
         {/* <HomeButton icon="book-education" text="Treinamentos" color="#E94560" />
         <HomeButton
@@ -101,7 +102,7 @@ export default function Home({navigation}) {
           onPress={() => handleRotogram()}
           icon="road"
           text="Rotogramas"
-          color="#A555EC"
+          color="#F4A261"
         />
         {/*<HomeButton
           icon="clipboard"
@@ -112,14 +113,14 @@ export default function Home({navigation}) {
           onPress={() => handleInformative()}
           icon="exclamation-thick"
           text="Informativos"
-          color="#95BDFF"
+          color="#E76F51"
         />
         {/*<HomeButton icon="bulletin-board" text="Mural" color="#F4DFC8" />*/}
         <HomeButton
           onPress={() => handleGuide()}
           icon="book-open-page-variant"
           text="Manuais e Políticas"
-          color="#4477CE"
+          color="#6A80B9"
         />
       </ButtonsList>
     </Container>

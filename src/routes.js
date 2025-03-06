@@ -3,6 +3,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -44,6 +47,7 @@ const defaultScreenOptions = {
   headerTintColor: '#FFF',
   headerBackTitleVisible: false,
   borderBottomWidth: 0,
+  headerShown: !isIOS,
 };
 
 const defaultBottomTabOptions = {

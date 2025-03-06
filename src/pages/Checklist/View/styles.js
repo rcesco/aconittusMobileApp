@@ -2,10 +2,17 @@ import styled from 'styled-components';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {RadioButton} from 'react-native-paper';
+
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
+const statusBarMargin = isIOS ? 60 : 0;
 
 export const Background = styled.View`
   flex: 1;
   background-color: #1583f2;
+  padding-top: ${statusBarMargin}px;
 `;
 
 export const Container = styled.View`
@@ -39,6 +46,11 @@ export const ResponseText = styled.Text`
 
 export const SubmitQuestions = styled(Button)`
   margin-top: 20px;
+`;
+
+export const SelectData = styled(Button)`
+  margin-top: 0px;
+  height: 40px;
 `;
 
 export const ButtonModal = styled.TouchableOpacity`
@@ -131,4 +143,33 @@ export const ButtonSelectComposition = styled.TouchableOpacity`
 export const ButtonSelectCompositionIcon = styled(Icon)`
   color: #fff;
   margin: 5px;
+`;
+
+export const RadioContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const StyledRadioButton = styled(RadioButton)`
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  border-width: 2px;
+  border-color: ${props => (props.selected ? '#007BFF' : '#888')};
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+`;
+
+export const RadioText = styled.Text`
+  font-size: 16px;
+  color: #e0e0e0;
+`;
+
+const InnerCircle = styled.View`
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background-color: rgb(250, 251, 253);
 `;

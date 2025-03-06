@@ -2,6 +2,10 @@ import styled from 'styled-components/native';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
+const statusBarMargin = isIOS ? 60 : 0;
 
 export const Container = styled.KeyboardAvoidingView.attrs({
   enabled: Platform.OS === 'ios',
@@ -12,6 +16,7 @@ export const Container = styled.KeyboardAvoidingView.attrs({
   justify-content: center;
   align-items: center;
   background-color: #1583f2;
+  padding-top: ${statusBarMargin}px;
 `;
 
 export const Form = styled.View`

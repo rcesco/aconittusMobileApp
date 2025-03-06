@@ -14,10 +14,12 @@ import {
   Date,
   InfoIcon,
   Background,
+  FormInput,
 } from './styles';
 
 const Informatives = ({navigation}) => {
   const [informative, setInformative] = useState([]);
+  const [search, setSearch] = useState('');
 
   function handleInformative(info) {
     //console.tron.log(info);
@@ -32,6 +34,12 @@ const Informatives = ({navigation}) => {
     setInformative(data);
   }
 
+  const filteredInformative = informative
+    ? informative.filter(item =>
+        item.description.toLowerCase().includes(search.toLowerCase()),
+      )
+    : [];
+
   useEffect(() => {
     const focused = navigation.addListener('focus', () => {
       handleListing();
@@ -41,9 +49,14 @@ const Informatives = ({navigation}) => {
 
   return (
     <Background>
+      <FormInput
+        placeholder="Pesquisar"
+        value={search}
+        onChangeText={setSearch}
+      />
       <Container>
         <List
-          data={informative}
+          data={filteredInformative}
           keyExtractor={info => info.title}
           renderItem={({item}) => (
             <InformativeContainer onPress={() => handleInformative(item)}>

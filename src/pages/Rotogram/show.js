@@ -5,6 +5,9 @@ import Api from '../../services/api';
 import Pdf from 'react-native-pdf';
 import Signature from 'react-native-signature-canvas';
 import {useNetInfo} from '@react-native-community/netinfo';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
 import {
   Container,
   ModalTerms,
@@ -39,8 +42,9 @@ const ShowRotogram = ({route, navigation}) => {
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      marginTop: 25,
+      marginTop: isIOS ? 60 : 25,
     },
+    melhoria: {marginTop: isIOS ? 60 : 25},
     pdf: {
       flex: 1,
       width: Dimensions.get('window').width,
@@ -164,7 +168,7 @@ const ShowRotogram = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ModalTerms>
+        <ModalTerms style={styles.melhoria}>
           <ModalHeader>
             Termo de Recebimento do {route.params.info.description}
           </ModalHeader>
@@ -211,7 +215,7 @@ const ShowRotogram = ({route, navigation}) => {
         animationType="slide"
         transparent={true}
         visible={modalSugestVisible}>
-        <ModalTerms>
+        <ModalTerms style={styles.melhoria}>
           <ModalHeader>
             Informar Melhoria do Rotograma {route.params.info.description}
           </ModalHeader>

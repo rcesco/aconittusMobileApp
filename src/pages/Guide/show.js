@@ -6,6 +6,9 @@ import Signature from 'react-native-signature-canvas';
 import Pdf from 'react-native-pdf';
 
 import {useNetInfo} from '@react-native-community/netinfo';
+import DeviceInfo from 'react-native-device-info';
+
+const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
 import {
   Container,
@@ -35,8 +38,9 @@ const ShowGuide = ({route, navigation}) => {
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      marginTop: 25,
+      marginTop: isIOS ? 60 : 25,
     },
+    melhoria: {marginTop: isIOS ? 60 : 25},
     pdf: {
       flex: 1,
       width: Dimensions.get('window').width,
@@ -103,6 +107,7 @@ const ShowGuide = ({route, navigation}) => {
             image: signature,
             idGuide: route.params.info.idguide,
           });
+          console.log(response);
           if (response.status === 200) {
             Alert.alert('Obrigado por Validar o acesso as Políticas!');
             setModalVisible(false);
@@ -129,7 +134,7 @@ const ShowGuide = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ModalTerms>
+        <ModalTerms style={styles.melhoria}>
           <ModalHeader>
             Termo de Recebimento do {route.params.info.description}
           </ModalHeader>

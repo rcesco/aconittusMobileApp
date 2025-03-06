@@ -32,6 +32,7 @@ export default function Questions({route, navigation}) {
     response.data.data.map(item =>
       initChoises.push({question: item.iddss_question, choise: 0}),
     );
+
     setResponses(initChoises);
     setQuestions(response.data.data);
   }
@@ -74,19 +75,21 @@ export default function Questions({route, navigation}) {
     if (fullResponse) {
       if (netInfo.isConnected) {
         try {
-          const response = await Api.post('/dss/postResponsesApp', postParams);
+          console.log(postParams);
+          /*const response = await Api.post('/dss/postResponsesApp', postParams);
 
           if (response.status === 200) {
             Alert.alert('', 'Obrigado por participar do DSS desta Semana!', [
               {text: 'OK', onPress: () => handleSucess()},
             ]);
-          }
+          }*/
         } catch (error) {
           Alert.alert(
             'Ocorreu um Erro ao enviar o DSS reporte ao Administrador!',
           );
         }
       } else {
+        console.log(postParams);
         Alert.alert('Você está sem conexão com a Internet');
       }
     } else {
