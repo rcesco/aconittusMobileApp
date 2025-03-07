@@ -187,3 +187,12 @@ export const ButtonSignature = styled.TouchableOpacity`
 
   justify-content: center;
 `;
+
+export const CheckIcon = styled.View`
+  background-color: #02b1a0;
+  border-style: solid;
+  border-radius: 50px;
+  border: 15px;
+  border-color: #02b1a0;
+  align-self: flex-start;
+`;

@@ -16,6 +16,7 @@ import {
   Question,
   FormInput,
   Background,
+  CheckIcon,
 } from './styles';
 
 const Rotograms = ({navigation}) => {
@@ -71,6 +72,13 @@ const Rotograms = ({navigation}) => {
                     })}
                   </Date>
                 </Infos>
+                {item.signatures > 0 ? (
+                  <CheckIcon>
+                    <Icon name="check" color="#FFF" size={20} />
+                  </CheckIcon>
+                ) : (
+                  <Name />
+                )}
               </TopInfo>
             </RotogramContainer>
           )}

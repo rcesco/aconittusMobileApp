@@ -6,7 +6,7 @@ export default reducers => {
     {
       key: 'appAconittus',
       storage: AsyncStorage,
-      whitelist: ['auth'],
+      whitelist: ['auth', 'user'],
     },
     reducers,
   );

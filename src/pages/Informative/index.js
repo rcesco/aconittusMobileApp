@@ -15,6 +15,7 @@ import {
   InfoIcon,
   Background,
   FormInput,
+  CheckIcon,
 } from './styles';
 
 const Informatives = ({navigation}) => {
@@ -72,6 +73,13 @@ const Informatives = ({navigation}) => {
                     })}
                   </Date>
                 </Infos>
+                {item.signatures > 0 ? (
+                  <CheckIcon>
+                    <Icon name="check" color="#FFF" size={20} />
+                  </CheckIcon>
+                ) : (
+                  <Name />
+                )}
               </TopInfo>
             </InformativeContainer>
           )}

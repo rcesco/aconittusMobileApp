@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Alert} from 'react-native';
 
@@ -26,7 +26,7 @@ import {
 } from './styles';
 
 export default function Profile() {
-  const profile = useSelector(state => state.user);
+  const profile = useSelector(state => state.user.profile);
   const dispatch = useDispatch();
   const dispatch2 = useDispatch();
 
@@ -58,6 +58,15 @@ export default function Profile() {
       dispatch2(updateProfileRequest(currentPassword, newPassword));
     }
   }
+
+  useEffect(() => {
+    console.log(profile);
+    if (profile && Object.keys(profile).length > 0) {
+      setName(profile?.name_person || '');
+      setUsername(profile?.name || '');
+      setEmail(profile?.email || '');
+    }
+  }, [profile]);
 
   return (
     <Background>

@@ -34,10 +34,11 @@ export default function Home({navigation}) {
   const dispatch = useDispatch();
 
   const user = useSelector(state => state.auth);
+  const profile = useSelector(state => state.user.profile);
 
   useEffect(() => {
     handleSignIn();
-  }, []);
+  }, [user]);
 
   function handleDss() {
     navigation.navigate('DssList');
@@ -73,7 +74,7 @@ export default function Home({navigation}) {
   return (
     <Container>
       <HeaderContainer>
-        <HeaderTitle>Bem Vindo!</HeaderTitle>
+        <HeaderTitle>Bem Vindo {profile.name_person}! </HeaderTitle>
         <HeaderText>
           Desejamos que tenha uma ótima jornada de trabalho! Lembre-se de todos
           os precedimentos de segurança, a vida em primeiro lugar!

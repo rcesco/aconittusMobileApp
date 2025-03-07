@@ -52,7 +52,9 @@ export function* signIn({payload}) {
       Api.defaults.headers.person = user.person_id;
       Api.defaults.headers.operation_types = user.operation_types;
 
-      yield put(signInSuccess(user.name, user.iduser, token, user.person_id));
+      yield put(
+        signInSuccess(user.name, user.iduser, token, user.person_id, user),
+      );
     } else {
       yield put(signFailure());
     }
