@@ -29,7 +29,7 @@ const Guide = ({navigation}) => {
     const response = await Api.get('/guide/listForApp');
 
     const {data} = response.data;
-
+    console.log(data);
     setGuide(data);
   }
 
@@ -66,9 +66,11 @@ const Guide = ({navigation}) => {
                 <Infos>
                   <Name>{item.description}</Name>
                   <Date>
-                    {format(parseISO(item.date), 'dd/MM/yyyy', {
-                      locale: ptBR,
-                    })}
+                    {item.expiration_date
+                      ? format(parseISO(item.expiration_date), 'dd/MM/yyyy', {
+                          locale: ptBR,
+                        })
+                      : ''}
                   </Date>
                 </Infos>
                 {item.signatures > 0 ? (

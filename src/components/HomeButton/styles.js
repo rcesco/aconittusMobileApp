@@ -19,14 +19,14 @@ export const IconContainer = styled.View`
   margin-top: 20%;
   align-items: center;
   justify-content: center;
-  width: 75px;
-  height: 75px;
+  min-width: 75px;
+  min-height: 75px;
 `;
 
 export const TextContainer = styled.View`
   justify-content: center;
   align-items: center;
-  max-width: 100%;
+  min-width: 100%;
 `;
 
 export const ButtonText = styled.Text`

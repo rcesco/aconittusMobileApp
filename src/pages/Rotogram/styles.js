@@ -181,7 +181,7 @@ export const SignatureButtonsContainer = styled.View`
 
 export const ButtonSignature = styled.TouchableOpacity`
   width: 100px;
-  height: 35px;
+  min-height: 45px;
   background: #164888;
   border-radius: 4px;
 

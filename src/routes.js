@@ -18,6 +18,7 @@ import SignIn from './pages/User/SignIn';
 import Dss from './pages/Dss';
 import DssList from './pages/Dss/DssList';
 import Questions from './pages/Dss/Questions';
+import QuestionsSolved from './pages/Dss/QuestionsSolved';
 
 /** CHecklist */
 import ChecklistList from './pages/Checklist';
@@ -85,6 +86,11 @@ function HomeScreen() {
         name="Questions"
         component={Questions}
         options={Questions.navigationOptions}
+      />
+      <Stack.Screen
+        name="QuestionsSolved"
+        component={QuestionsSolved}
+        options={QuestionsSolved.navigationOptions}
       />
       <Stack.Screen
         name="ChecklistList"

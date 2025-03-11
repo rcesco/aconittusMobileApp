@@ -41,8 +41,7 @@ export const HeaderText = styled.Text`
 `;
 
 export const ButtonsList = styled.View`
-  flex: 1;
-  top: 12%;
+  top: 50px;
   margin: 25px;
   flex-direction: row;
   flex-wrap: wrap;

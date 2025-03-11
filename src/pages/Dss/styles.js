@@ -42,5 +42,5 @@ export const Description = styled.Text`
 `;
 
 export const QuestionButton = styled(Button)`
-  margin-top: 10px;
+  margin-top: 0px;
 `;

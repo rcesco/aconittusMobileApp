@@ -129,5 +129,5 @@ export default function Home({navigation}) {
 }
 
 Home.navigationOptions = {
-  title: '',
+  title: 'Início',
 };

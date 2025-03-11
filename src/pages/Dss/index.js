@@ -23,6 +23,10 @@ export default function Dss({route, navigation}) {
     navigation.navigate('Questions', idDss);
   }
 
+  function handleQuestionsSolved(idDss) {
+    navigation.navigate('QuestionsSolved', idDss);
+  }
+
   const [playing, setPlaying] = useState(false);
 
   const onStateChange = useCallback(state => {
@@ -58,6 +62,13 @@ export default function Dss({route, navigation}) {
           <QuestionButton onPress={() => handleQuestions(dss)}>
             Responder As Questões
           </QuestionButton>
+        )}
+        {dss.seen > 0 ? (
+          <QuestionButton onPress={() => handleQuestionsSolved(dss)}>
+            Ver Respostas
+          </QuestionButton>
+        ) : (
+          ``
         )}
       </Container>
     </Background>

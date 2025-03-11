@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Alert} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import {useNetInfo} from '@react-native-community/netinfo';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Api from '../../../services/api';
 
@@ -12,9 +13,10 @@ import {
   List,
   ContainerQuestion,
   Background,
+  QuestionAnswer,
 } from './styles';
 
-export default function Questions({route, navigation}) {
+export default function QuestionsSolved({route, navigation}) {
   const [idDss, setIdDss] = useState('');
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState([]);
@@ -22,12 +24,12 @@ export default function Questions({route, navigation}) {
 
   async function initQuestions() {
     const response = await Api.get(
-      '/dss_question/getByDssIdApp/' + route.params.iddss,
+      '/dss_question/getByDssIdAppSolved/' + route.params.iddss,
       {
         id: route.params.iddss,
       },
     );
-
+    console.log(response.data.data);
     const initChoises = [];
     response.data.data.map(item =>
       initChoises.push({question: item.iddss_question, choise: 0}),
@@ -64,25 +66,6 @@ export default function Questions({route, navigation}) {
     };
 
     let fullResponse = true;
-    let correctAnswers = 0;
-
-    responses.forEach(item => {
-      if (item.choise === 0) {
-        fullResponse = false;
-      } else {
-        const question = questions.find(
-          q => q.iddss_question === item.question,
-        );
-        if (question) {
-          const selectedAnswer = question.answers.find(
-            ans => ans.value === item.choise,
-          );
-          if (selectedAnswer && selectedAnswer.correct) {
-            correctAnswers++;
-          }
-        }
-      }
-    });
 
     responses.map(item => {
       if (item.choise === 0) {
@@ -94,27 +77,21 @@ export default function Questions({route, navigation}) {
     if (fullResponse) {
       if (netInfo.isConnected) {
         try {
-          const response = await Api.post('/dss/postResponsesApp', postParams);
+          console.log(postParams);
+          /*const response = await Api.post('/dss/postResponsesApp', postParams);
 
           if (response.status === 200) {
-            const totalQuestions = questions.length;
-            const percentage = (
-              (correctAnswers / totalQuestions) *
-              100
-            ).toFixed(2);
-
-            Alert.alert(
-              'Resultado',
-              `Obrigado por participar do DSS desta Semana!\n\nSua pontuação: ${percentage}% de acerto`,
-              [{text: 'OK', onPress: () => handleSucess()}],
-            );
-          }
+            Alert.alert('', 'Obrigado por participar do DSS desta Semana!', [
+              {text: 'OK', onPress: () => handleSucess()},
+            ]);
+          }*/
         } catch (error) {
           Alert.alert(
             'Ocorreu um Erro ao enviar o DSS reporte ao Administrador!',
           );
         }
       } else {
+        console.log(postParams);
         Alert.alert('Você está sem conexão com a Internet');
       }
     } else {
@@ -124,6 +101,10 @@ export default function Questions({route, navigation}) {
         [{text: 'OK', style: 'cancel'}],
       );
     }
+
+    const response = await Api.post('/dss/postResponsesApp', postParams);
+
+    //console.tron.log(postParams);
   }
 
   return (
@@ -132,18 +113,45 @@ export default function Questions({route, navigation}) {
         <List
           data={questions}
           keyExtractor={question => question.iddss_question}
-          renderItem={({item}) => (
-            <ContainerQuestion>
-              <Question>{item.question}</Question>
-              <RadioForm
-                radio_props={item.answers}
-                initial={-1}
-                onPress={value => handleResponses(value, item.iddss_question)}
-                labelStyle={{fontSize: 18, color: '#FFF'}}
-                selectedButtonColor="#d3de32"
-              />
-            </ContainerQuestion>
-          )}
+          renderItem={({item}) => {
+            return (
+              <ContainerQuestion>
+                <Question>{item.question}</Question>
+                {item.answers.map((answer, index) => {
+                  const solvedValue = Number(answer.solved); // Convertendo solved para número
+
+                  const backgroundColor =
+                    solvedValue > 0 && answer.correct
+                      ? 'green'
+                      : solvedValue > 0 && !answer.correct
+                      ? 'red'
+                      : solvedValue === 0 && answer.correct
+                      ? 'green'
+                      : 'transparent';
+                  return (
+                    <QuestionAnswer
+                      key={index}
+                      style={{
+                        backgroundColor,
+                        padding: 10,
+                        borderRadius: 5,
+                        marginVertical: 5,
+                      }}>
+                      {answer.label}
+                      {solvedValue > 0 && (
+                        <Icon
+                          name="check"
+                          size={20}
+                          color="white"
+                          style={{marginLeft: 8}}
+                        />
+                      )}
+                    </QuestionAnswer>
+                  );
+                })}
+              </ContainerQuestion>
+            );
+          }}
         />
         <SubmitQuestions
           onPress={() => {
@@ -156,6 +164,6 @@ export default function Questions({route, navigation}) {
   );
 }
 
-Questions.navigationOptions = {
+QuestionsSolved.navigationOptions = {
   title: 'Respondendo Questões',
 };
