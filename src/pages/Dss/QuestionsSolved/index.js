@@ -60,51 +60,7 @@ export default function QuestionsSolved({route, navigation}) {
   }
 
   async function handlePostResponses() {
-    const postParams = {
-      idDss,
-      responses,
-    };
-
-    let fullResponse = true;
-
-    responses.map(item => {
-      if (item.choise === 0) {
-        fullResponse = false;
-      }
-      return true;
-    });
-
-    if (fullResponse) {
-      if (netInfo.isConnected) {
-        try {
-          console.log(postParams);
-          /*const response = await Api.post('/dss/postResponsesApp', postParams);
-
-          if (response.status === 200) {
-            Alert.alert('', 'Obrigado por participar do DSS desta Semana!', [
-              {text: 'OK', onPress: () => handleSucess()},
-            ]);
-          }*/
-        } catch (error) {
-          Alert.alert(
-            'Ocorreu um Erro ao enviar o DSS reporte ao Administrador!',
-          );
-        }
-      } else {
-        console.log(postParams);
-        Alert.alert('Você está sem conexão com a Internet');
-      }
-    } else {
-      Alert.alert(
-        'Alerta!',
-        'Você precisa selecionar pelo menos uma resposta para cada questão!',
-        [{text: 'OK', style: 'cancel'}],
-      );
-    }
-
-    const response = await Api.post('/dss/postResponsesApp', postParams);
-
-    //console.tron.log(postParams);
+    navigation.navigate('DssList');
   }
 
   return (
@@ -157,7 +113,7 @@ export default function QuestionsSolved({route, navigation}) {
           onPress={() => {
             handlePostResponses();
           }}>
-          Enviar Respostas
+          Voltar
         </SubmitQuestions>
       </Container>
     </Background>
