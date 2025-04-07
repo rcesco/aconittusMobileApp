@@ -29,6 +29,9 @@ export function* signIn({payload}) {
       case '3005':
         port = 3338;
         break;
+      case '3006':
+        port = 3333;
+        break;
       default:
         port = 3331; // Porta padrão
     }
