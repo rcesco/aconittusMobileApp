@@ -78,11 +78,11 @@ export default function QuestionsSolved({route, navigation}) {
 
                   const backgroundColor =
                     solvedValue > 0 && answer.correct
-                      ? 'green'
+                      ? '#02b1a0'
                       : solvedValue > 0 && !answer.correct
-                      ? 'red'
+                      ? '#E94560'
                       : solvedValue === 0 && answer.correct
-                      ? 'green'
+                      ? '#02b1a0'
                       : 'transparent';
                   return (
                     <QuestionAnswer

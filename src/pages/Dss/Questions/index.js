@@ -94,18 +94,27 @@ export default function Questions({route, navigation}) {
     if (fullResponse) {
       if (netInfo.isConnected) {
         try {
-          const response = await Api.post('/dss/postResponsesApp', postParams);
+          const totalQuestions = questions.length;
+          const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(
+            2,
+          );
+          if (percentage >= route.params.percent) {
+            const response = await Api.post(
+              '/dss/postResponsesApp',
+              postParams,
+            );
 
-          if (response.status === 200) {
-            const totalQuestions = questions.length;
-            const percentage = (
-              (correctAnswers / totalQuestions) *
-              100
-            ).toFixed(2);
-
+            if (response.status === 200) {
+              Alert.alert(
+                'Resultado',
+                `Obrigado por participar do DSS desta Semana!\n\nSua pontuação: ${percentage}% de acerto`,
+                [{text: 'OK', onPress: () => handleSucess()}],
+              );
+            }
+          } else {
             Alert.alert(
               'Resultado',
-              `Obrigado por participar do DSS desta Semana!\n\nSua pontuação: ${percentage}% de acerto`,
+              `Você Não Atingiu a Porcentagem Necessária, por favor assista novamente!\n\nSua pontuação: ${percentage}% de acerto`,
               [{text: 'OK', onPress: () => handleSucess()}],
             );
           }
