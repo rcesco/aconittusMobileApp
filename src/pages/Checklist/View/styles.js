@@ -167,7 +167,7 @@ export const RadioText = styled.Text`
   color: #e0e0e0;
 `;
 
-const InnerCircle = styled.View`
+export const InnerCircle = styled.View`
   width: 14px;
   height: 14px;
   border-radius: 7px;
