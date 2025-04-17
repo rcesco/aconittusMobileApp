@@ -32,8 +32,8 @@ export default function SignIn({navigation}) {
 
   const loading = useSelector(state => state.auth.loading);
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('067.804.049-42');
+  const [password, setPassword] = useState('adm123');
   const [codeBranch, setCodeBranch] = useState('');
   const netInfo = useNetInfo();
 

@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Alert,
   Modal,
   Button,
-  TextInput,
+  FlatList,
   PermissionsAndroid,
   Platform,
   Linking,
   TouchableOpacity,
+  Text,
 } from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from '../../../services/api';
@@ -17,12 +18,15 @@ import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from 'react-native-device-info';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/AntDesign';
+import IconEntypo from 'react-native-vector-icons/Entypo';
+import {ActivityIndicator} from 'react-native';
 
 import {
   Container,
   Question,
   SubmitQuestions,
-  List,
   ContainerQuestion,
   ModalButton,
   ModalButtonText,
@@ -34,12 +38,18 @@ import {
   ButtonSelectCompositionIcon,
   ModalButtonSelect,
   Background,
-  ResponseText,
+  SubmitButtonText,
   SelectData,
   RadioContainer,
   RadioText,
   StyledRadioButton,
   InnerCircle,
+  navigationContainer,
+  NavButton,
+  NavButtonText,
+  StyledButton,
+  StyledButtonText,
+  QuestionContainer,
 } from './styles';
 
 export default function Checklist({route, navigation}) {
@@ -49,7 +59,8 @@ export default function Checklist({route, navigation}) {
   const [responses, setResponses] = useState([]);
   const [latitude, setLatitude] = useState([]);
   const [longitude, setLongitude] = useState([]);
-  const [composition, setComposition] = useState([]);
+  const [composition, setComposition] = useState('');
+  const [categoryChecklist, setCategoryChecklist] = useState('composicao');
   const [compositionName, setCompositionName] = useState([]);
   const [compositionsList, setCompositionsList] = useState([]);
   const [compositionListTmp, setCompositionsListTmp] = useState([]);
@@ -59,6 +70,10 @@ export default function Checklist({route, navigation}) {
   const [ip, setIp] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState({});
   const isIOS = DeviceInfo.getSystemName() === 'iOS';
+
+  const listRef = useRef(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [textResponses, setTextResponses] = useState({});
 
   async function initQuestions() {
     const netInfoState = await NetInfo.fetch();
@@ -71,6 +86,9 @@ export default function Checklist({route, navigation}) {
           id: route.params.checklist.id,
         },
       );
+
+      setCategoryChecklist(route.params.checklist.category);
+
       const initChoises = [];
       response.data.data.map(item => {
         initChoises.push({
@@ -101,14 +119,21 @@ export default function Checklist({route, navigation}) {
   }
 
   async function handleCompositions() {
-    const response = await Api.get(
-      '/vehicle_composition/get_by_dates/2023-08-11/2025-08-24',
-    );
+    try {
+      start_date = moment().format('YYYY-MM-DD');
+      end_date = moment().format('YYYY-MM-DD');
+      const response = await Api.get(
+        `/vehicle_composition/get_by_dates/${start_date}/${end_date}`,
+      );
 
-    const {data} = response.data;
+      const {data} = response.data;
 
-    setCompositionsList(data);
-    setCompositionsListTmp(data);
+      setCompositionsList(data);
+      setCompositionsListTmp(data);
+    } catch (error) {
+      console.log('erro: ' + error);
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -121,6 +146,11 @@ export default function Checklist({route, navigation}) {
   });
 
   async function handleResponses(response, date, string, id) {
+    const index = questions.findIndex(q => q.idchecklist_question === id);
+    if (index !== -1) {
+      setCurrentQuestionIndex(index);
+    }
+
     if (date !== null) {
       setDates(prevDates => ({...prevDates, [id]: date}));
     }
@@ -130,6 +160,10 @@ export default function Checklist({route, navigation}) {
         ...prevRadioResponses,
         [id]: response,
       }));
+    }
+
+    if (typeof string === 'string') {
+      setTextResponses(prev => ({...prev, [id]: string}));
     }
 
     responses.forEach(function (value, index, arr) {
@@ -247,6 +281,12 @@ export default function Checklist({route, navigation}) {
         return true;
       });
 
+      if (categoryChecklist === 'composicao' && composition === '') {
+        Alert.alert('Você Precisa Selecionar a Composição');
+        setDisableForm(false);
+        return;
+      }
+
       if (fullResponse) {
         try {
           const response = await Api.post(
@@ -279,22 +319,19 @@ export default function Checklist({route, navigation}) {
   async function changeComposition(filterq) {
     const compositionTest = compositionListTmp.filter(
       e =>
-        e.vehicle_id
+        e.composition
           .toLowerCase()
           .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos
+          .replace(/[\u0300-\u036f]/g, '')
           .indexOf(
             filterq
               .trim()
               .toLowerCase()
               .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, ''), // Remove diacríticos do termo de busca
-          ) !== -1, // Verifica se o termo de busca está contido em vehicle_id
+              .replace(/[\u0300-\u036f]/g, ''),
+          ) !== -1,
     );
-
-    compositionTest.length >= 1
-      ? setCompositionsListTmp(compositionTest)
-      : setCompositionsListTmp(compositionsList);
+    setCompositionsList(compositionTest);
   }
 
   const showDatepicker = questionId => {
@@ -307,6 +344,60 @@ export default function Checklist({route, navigation}) {
   useEffect(() => {
     requestLocationPermission();
   }, []);
+
+  const goToNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      listRef.current?.scrollToIndex({
+        index: currentQuestionIndex + 1,
+        animated: true,
+      });
+    }
+  };
+
+  const goToPreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      listRef.current?.scrollToIndex({
+        index: currentQuestionIndex - 1,
+        animated: true,
+      });
+    }
+  };
+
+  const isQuestionAnswered = (questionId, questionType) => {
+    if (questionType === 'radio') {
+      const hasRadioSelection =
+        radioResponses[questionId] !== undefined &&
+        radioResponses[questionId] !== null;
+      const hasTextDetail =
+        textResponses[questionId] !== undefined &&
+        textResponses[questionId]?.trim() !== '';
+
+      return hasRadioSelection || hasTextDetail;
+    }
+
+    if (questionType === 'date') {
+      return dates[questionId] !== undefined && dates[questionId] !== null;
+    }
+
+    if (questionType === 'hour') {
+      return dates[questionId] !== undefined && dates[questionId] !== null;
+    }
+
+    if (questionType === 'string') {
+      return (
+        textResponses[questionId] !== undefined &&
+        textResponses[questionId]?.trim() !== ''
+      );
+    }
+
+    return false;
+  };
+
+  const answeredCount = questions.filter(q =>
+    isQuestionAnswered(q.idchecklist_question, q.type),
+  ).length;
 
   return (
     <Background>
@@ -321,37 +412,17 @@ export default function Checklist({route, navigation}) {
               onChangeText={e => changeComposition(e)}
               placeholder="Pesquisar"
             />
-            <List
-              data={compositionListTmp}
+            <FlatList
+              data={compositionsList}
               keyExtractor={comp => comp.idvehicle_composition}
               renderItem={({item}) => (
                 <CompositionContainer>
-                  <CompositionName>{`${
-                    item.vehicle_id !== null ? item.vehicle_id : ''
-                  } ${
-                    item.vehicle_cart_id !== null ? item.vehicle_cart_id : ''
-                  } ${
-                    item.vehicle_cart2_id !== null ? item.vehicle_cart2_id : ''
-                  } ${
-                    item.vehicle_cart3_id !== null ? item.vehicle_cart3_id : ''
-                  }`}</CompositionName>
+                  <CompositionName>{item.composition}</CompositionName>
                   <ButtonSelectComposition
                     onPress={() =>
                       selectComposition(
                         item.idvehicle_composition,
-                        `${item.vehicle_id !== null ? item.vehicle_id : ''} ${
-                          item.vehicle_cart_id !== null
-                            ? item.vehicle_cart_id
-                            : ''
-                        } ${
-                          item.vehicle_cart2_id !== null
-                            ? item.vehicle_cart2_id
-                            : ''
-                        } ${
-                          item.vehicle_cart3_id !== null
-                            ? item.vehicle_cart3_id
-                            : ''
-                        }`,
+                        item.composition,
                       )
                     }>
                     <ButtonSelectCompositionIcon name="check" size={20} />
@@ -361,160 +432,276 @@ export default function Checklist({route, navigation}) {
             />
           </ModalBody>
         </Modal>
-        <FormInput value={compositionName} editable={false} />
-        <ModalButtonSelect onPress={() => setModalVisible(true)}>
-          <ModalButtonText>Selecionar Composição</ModalButtonText>
-        </ModalButtonSelect>
-        <List
-          data={questions}
-          initialNumToRender={10}
-          keyExtractor={question => question.idchecklist_question}
-          renderItem={({item}) => (
-            <ContainerQuestion>
-              <Question>{item.description}</Question>
-              {item.type === 'radio' ? (
-                <RadioButton.Group
-                  onValueChange={value =>
-                    handleResponses(
-                      value,
-                      null,
-                      null,
-                      item.idchecklist_question,
-                    )
-                  }
-                  value={radioResponses[item.idchecklist_question] || null}>
-                  {item.answers.map(i => (
-                    <RadioContainer
-                      key={i.value}
-                      onPress={() =>
+        {categoryChecklist === 'composicao' ? (
+          <>
+            <FormInput value={compositionName} editable={false} />
+            <ModalButtonSelect onPress={() => setModalVisible(true)}>
+              <ModalButtonText>Selecionar Composição</ModalButtonText>
+            </ModalButtonSelect>
+          </>
+        ) : null}
+
+        <View style={{alignItems: 'center', marginVertical: 10}}>
+          <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>
+            {answeredCount}/{questions.length} questões respondidas
+          </Text>
+        </View>
+
+        <View style={{flex: 1}}>
+          {questions.length > 0 && (
+            <QuestionContainer
+              isCurrent={true}
+              isAnswered={isQuestionAnswered(
+                questions[currentQuestionIndex].idchecklist_question,
+                questions[currentQuestionIndex].type,
+              )}>
+              <ContainerQuestion>
+                <Question>
+                  {currentQuestionIndex + 1} -{' '}
+                  {questions[currentQuestionIndex].description}
+                </Question>
+
+                {questions[currentQuestionIndex].type === 'radio' && (
+                  <>
+                    <RadioButton.Group
+                      onValueChange={value =>
                         handleResponses(
-                          i.value,
+                          value,
                           null,
                           null,
-                          item.idchecklist_question,
+                          questions[currentQuestionIndex].idchecklist_question,
+                        )
+                      }
+                      value={
+                        radioResponses[
+                          questions[currentQuestionIndex].idchecklist_question
+                        ] || null
+                      }>
+                      {questions[currentQuestionIndex].answers.map(i => (
+                        <RadioContainer
+                          key={i.value}
+                          onPress={() =>
+                            handleResponses(
+                              i.value,
+                              null,
+                              null,
+                              questions[currentQuestionIndex]
+                                .idchecklist_question,
+                            )
+                          }>
+                          <StyledRadioButton value={i.value}>
+                            <InnerCircle />
+                          </StyledRadioButton>
+                          <RadioText>{i.label}</RadioText>
+                        </RadioContainer>
+                      ))}
+                    </RadioButton.Group>
+
+                    <FormInput
+                      autoCorrect={true}
+                      placeholder="Detalhe o Problema"
+                      onChangeText={e =>
+                        handleResponses(
+                          -1,
+                          null,
+                          e,
+                          questions[currentQuestionIndex].idchecklist_question,
+                        )
+                      }
+                      multiline={true}
+                    />
+                  </>
+                )}
+
+                {questions[currentQuestionIndex].type === 'date' && (
+                  <View>
+                    <FormInput
+                      value={
+                        dates[
+                          questions[currentQuestionIndex].idchecklist_question
+                        ]?.toLocaleDateString() || ''
+                      }
+                      placeholder="Não Selecionado Data"
+                      editable={false}
+                    />
+                    <SelectData
+                      title="Selecionar Data"
+                      onPress={() =>
+                        showDatepicker(
+                          questions[currentQuestionIndex].idchecklist_question,
                         )
                       }>
-                      <StyledRadioButton
-                        value={i.value}
-                        color={'#dddddd'}
-                        uncheckedColor={'#FFFFFF'}>
-                        <InnerCircle />
-                      </StyledRadioButton>
-                      <RadioText>{i.label}</RadioText>
-                    </RadioContainer>
-                  ))}
-                </RadioButton.Group>
-              ) : null}
-              {item.type === 'radio' ? (
-                <FormInput
-                  autoCorrect={true}
-                  placeholder="Detalhe o Problema"
-                  onChangeText={e =>
-                    handleResponses(-1, null, e, item.idchecklist_question)
-                  }
-                  multiline={true}
-                />
-              ) : null}
-              {item.type === 'date' ? (
-                <View>
-                  <FormInput
-                    value={
-                      dates[item.idchecklist_question]?.toLocaleDateString() ||
-                      ''
-                    }
-                    placeholder="Não Selecionado Data"
-                    editable={false}
-                  />
-                  <SelectData
-                    title="Selecionar Data"
-                    onPress={() => showDatepicker(item.idchecklist_question)}>
-                    Selecionar Data
-                  </SelectData>
-                  {showDatePicker[item.idchecklist_question] && (
-                    <DateTimePicker
-                      testID={item.idchecklist_question}
-                      value={dates[item.idchecklist_question] || new Date()}
-                      mode="date"
-                      display={isIOS ? 'calendar' : 'default'}
-                      onChange={(e, selectedDate) =>
-                        handleResponses(
-                          null,
-                          selectedDate,
-                          null,
-                          item.idchecklist_question,
-                        )
-                      }
-                    />
-                  )}
-                </View>
-              ) : null}
-              {item.type === 'hour' ? (
-                <View>
-                  <FormInput
-                    value={
-                      dates[item.idchecklist_question]
-                        ? dates[item.idchecklist_question].toLocaleTimeString(
-                            [],
-                            {
+                      Selecionar Data
+                    </SelectData>
+                    {showDatePicker[
+                      questions[currentQuestionIndex].idchecklist_question
+                    ] && (
+                      <DateTimePicker
+                        testID={
+                          questions[currentQuestionIndex].idchecklist_question
+                        }
+                        value={
+                          dates[
+                            questions[currentQuestionIndex].idchecklist_question
+                          ] || new Date()
+                        }
+                        mode="date"
+                        display={isIOS ? 'calendar' : 'default'}
+                        onChange={(e, selectedDate) =>
+                          handleResponses(
+                            null,
+                            selectedDate,
+                            null,
+                            questions[currentQuestionIndex]
+                              .idchecklist_question,
+                          )
+                        }
+                      />
+                    )}
+                  </View>
+                )}
+
+                {questions[currentQuestionIndex].type === 'hour' && (
+                  <View>
+                    <FormInput
+                      value={
+                        dates[
+                          questions[currentQuestionIndex].idchecklist_question
+                        ]
+                          ? dates[
+                              questions[currentQuestionIndex]
+                                .idchecklist_question
+                            ].toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
-                            },
-                          )
-                        : ''
-                    }
-                    placeholder="Não Selecionado Hora"
-                    editable={false}
-                  />
-                  <SelectData
-                    title="Selecionar Hora"
-                    onPress={() => showDatepicker(item.idchecklist_question)}>
-                    Selecionar Hora
-                  </SelectData>
-                  {showDatePicker[item.idchecklist_question] && (
-                    <DateTimePicker
-                      testID={item.idchecklist_question}
-                      value={dates[item.idchecklist_question] || new Date()}
-                      mode="time"
-                      display="default"
-                      onChange={(e, selectedDate) =>
-                        handleResponses(
-                          null,
-                          selectedDate,
-                          null,
-                          item.idchecklist_question,
-                        )
+                            })
+                          : ''
                       }
+                      placeholder="Não Selecionado Hora"
+                      editable={false}
                     />
-                  )}
-                </View>
-              ) : null}
-              {item.type === 'string' ? (
-                <FormInput
-                  autoCorrect={true}
-                  placeholder="Escreva Sua Resposta"
-                  onChangeText={e =>
-                    handleResponses(null, null, e, item.idchecklist_question)
-                  }
-                  multiline={true}
+                    <SelectData
+                      title="Selecionar Hora"
+                      onPress={() =>
+                        showDatepicker(
+                          questions[currentQuestionIndex].idchecklist_question,
+                        )
+                      }>
+                      Selecionar Hora
+                    </SelectData>
+                    {showDatePicker[
+                      questions[currentQuestionIndex].idchecklist_question
+                    ] && (
+                      <DateTimePicker
+                        testID={
+                          questions[currentQuestionIndex].idchecklist_question
+                        }
+                        value={
+                          dates[
+                            questions[currentQuestionIndex].idchecklist_question
+                          ] || new Date()
+                        }
+                        mode="time"
+                        display="default"
+                        onChange={(e, selectedDate) =>
+                          handleResponses(
+                            null,
+                            selectedDate,
+                            null,
+                            questions[currentQuestionIndex]
+                              .idchecklist_question,
+                          )
+                        }
+                      />
+                    )}
+                  </View>
+                )}
+
+                {questions[currentQuestionIndex].type === 'string' && (
+                  <FormInput
+                    autoCorrect={true}
+                    placeholder="Escreva Sua Resposta"
+                    onChangeText={e =>
+                      handleResponses(
+                        null,
+                        null,
+                        e,
+                        questions[currentQuestionIndex].idchecklist_question,
+                      )
+                    }
+                    multiline={true}
+                  />
+                )}
+
+                <View
+                  style={{
+                    borderBottomColor: '#FFF',
+                    borderBottomWidth: 0.6,
+                    marginVertical: 10,
+                  }}
                 />
-              ) : null}
-              <View
-                style={{
-                  borderBottomColor: '#FFF',
-                  borderBottomWidth: 0.6,
-                  marginVertical: 10,
-                }}
-              />
-            </ContainerQuestion>
+              </ContainerQuestion>
+            </QuestionContainer>
           )}
-        />
-        <SubmitQuestions
-          onPress={() => {
-            handlePostResponses();
-          }}
-          loading={disableForm}>
-          Enviar Respostas
-        </SubmitQuestions>
+
+          <View style={navigationContainer}>
+            <View style={{flexDirection: 'row', width: '100%'}}>
+              <StyledButton
+                onPress={goToPreviousQuestion}
+                disabled={currentQuestionIndex === 0}
+                isDisabled={currentQuestionIndex === 0}>
+                <Icon
+                  name="caretleft"
+                  size={20}
+                  color={currentQuestionIndex === 0 ? '#adb5bd' : 'white'}
+                />
+                <StyledButtonText isDisabled={currentQuestionIndex === 0}>
+                  Anterior
+                </StyledButtonText>
+              </StyledButton>
+
+              <NavButton
+                disabled={currentQuestionIndex === questions.length - 1}
+                isDisabled={currentQuestionIndex === questions.length - 1}
+                onPress={goToNextQuestion}
+                activeOpacity={0.7}>
+                <NavButtonText
+                  isDisabled={currentQuestionIndex === questions.length - 1}>
+                  Próxima
+                </NavButtonText>
+                <Icon
+                  name="caretright"
+                  size={20}
+                  color={
+                    currentQuestionIndex === questions.length - 1
+                      ? '#adb5bd'
+                      : 'white'
+                  }
+                />
+              </NavButton>
+            </View>
+          </View>
+
+          <View style={navigationContainer}>
+            <View style={{flexDirection: 'row', width: '100%'}}>
+              <SubmitQuestions
+                onPress={handlePostResponses}
+                disabled={answeredCount !== questions.length || disableForm}>
+                {disableForm ? (
+                  <>
+                    <ActivityIndicator size="small" color="#fff" />
+                    <SubmitButtonText>Enviando Respostas</SubmitButtonText>
+                  </>
+                ) : (
+                  <>
+                    <IconEntypo name="save" size={20} color="white" />
+                    <SubmitButtonText>Enviar Respostas</SubmitButtonText>
+                  </>
+                )}
+              </SubmitQuestions>
+            </View>
+          </View>
+        </View>
       </Container>
     </Background>
   );

@@ -39,6 +39,9 @@ import ShowGuide from './pages/Guide/show';
 /** Profile */
 import Profile from './pages/Profile';
 
+/** TireInspection */
+import TireInspection from './pages/TireInspection';
+
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
@@ -131,6 +134,11 @@ function HomeScreen() {
         name="ShowGuide"
         component={ShowGuide}
         options={ShowGuide.navigationOptions}
+      />
+      <Stack.Screen
+        name="TireInspection"
+        component={TireInspection}
+        options={TireInspection.navigationOptions}
       />
     </Stack.Navigator>
   );

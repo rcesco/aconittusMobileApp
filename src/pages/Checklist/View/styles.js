@@ -39,15 +39,6 @@ export const Question = styled.Text`
   color: #fff;
 `;
 
-export const ResponseText = styled.Text`
-  font-size: 16px;
-  color: #e0e0e0;
-`;
-
-export const SubmitQuestions = styled(Button)`
-  margin-top: 20px;
-`;
-
 export const SelectData = styled(Button)`
   margin-top: 0px;
   height: 40px;
@@ -59,7 +50,6 @@ export const ButtonModal = styled.TouchableOpacity`
   height: 46px;
   background: #367fa9;
   border-radius: 4px;
-
   align-items: center;
   justify-content: center;
 `;
@@ -97,23 +87,23 @@ export const ModalBody = styled.View`
   flex: 1;
 `;
 
-export const ModalButtonSelect = styled(Button)``;
+export const ModalButtonSelect = styled(Button)`
+  margin-top: 0px;
+  height: 35px;
+  background: #696969;
+`;
 
 export const ModalButton = styled.TouchableOpacity`
   height: 25px;
   background: #f06548;
   border-radius: 20px;
-
   align-items: center;
   justify-content: center;
 `;
 
 export const ModalButtonText = styled.Text`
   color: #fff;
-  font-size: 16px;
-`;
-export const FormInput = styled(Input)`
-  margin-bottom: 10px;
+  font-size: 14px;
 `;
 
 export const CompositionContainer = styled.View`
@@ -172,4 +162,114 @@ export const InnerCircle = styled.View`
   height: 14px;
   border-radius: 7px;
   background-color: rgb(250, 251, 253);
+`;
+
+export const QuestionContainer = styled.View`
+  padding: 16px;
+  margin: 8px;
+  background-color: ${({isAnswered}) =>
+    isAnswered ? '#4169E1' : 'rgba(255,255,255,0.05)'};
+  border-radius: 8px;
+  border-width: ${({isCurrent}) => (isCurrent ? '2px' : '0px')};
+  border-color: ${({isCurrent}) => (isCurrent ? '#6200ee' : 'transparent')};
+`;
+
+export const currentQuestion = styled.View`
+  border-color: #6200ee;
+  border-width: 2px;
+`;
+
+export const answeredQuestion = styled.View`
+  background-color: #e8f5e9;
+`;
+
+export const navigationContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-top-width: 1px;
+  border-top-color: #e0e0e0;
+  gap: 8px;
+`;
+
+export const disabledButton = styled.View`
+  background-color: #e9ecef;
+`;
+
+export const disabledText = styled.Text`
+  color: #adb5bd;
+`;
+
+export const buttonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  margin-horizontal: 8px;
+`;
+
+export const StyledButton = styled.TouchableOpacity`
+  flex: 1;
+  background-color: ${({isDisabled}) => (isDisabled ? '#e9ecef' : '#696969')};
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  margin-right: 2px;
+  margin-top: 2px;
+`;
+
+export const StyledButtonText = styled.Text`
+  color: ${({isDisabled}) => (isDisabled ? '#adb5bd' : 'white')};
+  font-weight: bold;
+  font-size: 14px;
+  margin-left: 3px;
+`;
+
+export const NavButton = styled.TouchableOpacity`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: ${({isDisabled}) => (isDisabled ? '#e9ecef' : '#696969')};
+  margin-left: 2px;
+  margin-top: 2px;
+`;
+
+export const NavButtonText = styled.Text`
+  color: ${({isDisabled}) => (isDisabled ? '#adb5bd' : '#fff')};
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 3px;
+`;
+
+export const SubmitQuestions = styled.TouchableOpacity`
+  flex: 1;
+  background-color: #40e0d0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-left: 2px;
+  margin-top: 2px;
+  opacity: ${({disabled}) => (disabled ? 0.6 : 1)};
+`;
+
+export const SubmitButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  margin-left: 2px;
+`;
+
+export const FormInput = styled(Input)`
+  margin-bottom: 4px;
+  height: 40px;
+  font-size: 12px;
+  padding-horizontal: 4px;
 `;

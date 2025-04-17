@@ -4,26 +4,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 
-import {
-  Container,
-  List,
-  ChecklistButton,
-  TopInfo,
-  ChecklistIcon,
-  Infos,
-  Name,
-  FormInput,
-} from './styles';
+import {Container, List} from './styles';
 import {Alert} from 'react-native';
 
-export default function ChecklistList({navigation}) {
+export default function TireInspectionList({navigation}) {
   const [checklistList, setChecklistList] = useState([]);
   const [checklistListTmp, setChecklistListTmp] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  function handleChecklist(checklist) {
-    navigation.navigate('Checklist', {checklist});
-  }
 
   async function handleListing() {
     setRefreshing(true);
@@ -87,35 +74,9 @@ export default function ChecklistList({navigation}) {
       : setChecklistListTmp(checklistList);
   }
 
-  return (
-    <Container>
-      <FormInput
-        editable={true}
-        onChangeText={e => changeListChecklist(e)}
-        placeholder="Pesquisar"
-      />
-      <List
-        data={checklistListTmp}
-        keyExtractor={checklist => checklist.idchecklist}
-        renderItem={({item}) => (
-          <ChecklistButton onPress={() => handleChecklist(item)}>
-            <TopInfo>
-              <ChecklistIcon>
-                <Icon name="clipboard-list" size={40} color="#FFF" />
-              </ChecklistIcon>
-              <Infos>
-                <Name>{item.description.trim()}</Name>
-              </Infos>
-            </TopInfo>
-          </ChecklistButton>
-        )}
-        refreshing={refreshing}
-        onRefresh={handleListing}
-      />
-    </Container>
-  );
+  return <Container></Container>;
 }
 
-ChecklistList.navigationOptions = {
-  title: 'Lista de Checklist',
+TireInspectionList.navigationOptions = {
+  title: 'Lista de Inspeção de Pneus',
 };

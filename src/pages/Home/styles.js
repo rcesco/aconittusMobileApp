@@ -20,7 +20,7 @@ export const ContainerImage = styled.View`
 `;
 
 export const HeaderContainer = styled.View`
-  top: 30px;
+  top: 10px;
   left: 7%;
   right: 7%;
   height: 50px;
