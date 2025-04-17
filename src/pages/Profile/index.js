@@ -60,7 +60,7 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    console.log(profile);
+    //console.log(profile);
     if (profile && Object.keys(profile).length > 0) {
       setName(profile?.name_person || '');
       setUsername(profile?.name || '');

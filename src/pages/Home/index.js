@@ -82,7 +82,7 @@ export default function Home({navigation}) {
   return (
     <Container>
       <HeaderContainer>
-        <HeaderTitle>Bem Vindo {profile.name_person}! </HeaderTitle>
+        <HeaderTitle>Bem Vindo {profile?.name_person ?? ''}! </HeaderTitle>
         <HeaderText>
           Desejamos que tenha uma ótima jornada de trabalho! Lembre-se de todos
           os precedimentos de segurança, a vida em primeiro lugar!
