@@ -128,14 +128,14 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
                   {renderWheelGroup(
                     axis.type === 'simples'
                       ? [axis.wheel[0]]
-                      : [axis.wheel[0], axis.wheel[2]],
+                      : [axis.wheel[0], axis.wheel[1]],
                     'left',
                     axis.type !== 'simples',
                   )}
                   {renderWheelGroup(
                     axis.type === 'simples'
                       ? [axis.wheel[1]]
-                      : [axis.wheel[1], axis.wheel[3]],
+                      : [axis.wheel[3], axis.wheel[2]],
                     'right',
                     axis.type !== 'simples',
                   )}
