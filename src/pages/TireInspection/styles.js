@@ -6,11 +6,8 @@ import {RadioButton} from 'react-native-paper';
 import {Dimensions, View} from 'react-native';
 
 const {width} = Dimensions.get('window');
-<<<<<<< HEAD
 const {height: screenHeight} = Dimensions.get('window');
 
-=======
->>>>>>> 9764c98 (tire inspection)
 const wheelWidth = width * 0.15; // 18% da largura da tela
 const wheelHeight = wheelWidth * 1.5; // Altura proporcional à largura
 
@@ -450,11 +447,7 @@ export const AxesContainer = styled.ScrollView.attrs({
   background-color: #f8f9fa;
   border-radius: 8px;
   margin: 8px;
-<<<<<<< HEAD
-  max-height: ${screenHeight * 0.75}px;
-=======
   max-height: 500px;
->>>>>>> 9764c98 (tire inspection)
 `;
 
 export const AxisContainer = styled.View`
