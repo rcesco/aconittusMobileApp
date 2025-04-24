@@ -81,3 +81,5 @@ To learn more about React Native, take a look at the following resources:
 npx react-native doctor
 
 https://oblador.github.io/react-native-vector-icons/
+
+para teste = 067.804.049-42 = adm123

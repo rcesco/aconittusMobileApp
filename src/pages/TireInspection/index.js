@@ -150,13 +150,7 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
   };
 
   return axes && axes.length > 0 ? (
-    <AxesContainer
-      style={{
-        minHeight: Math.min(calculateTotalHeight(), 500),
-        maxHeight: 500,
-      }}>
-      {renderAllAxes()}
-    </AxesContainer>
+    <AxesContainer>{renderAllAxes()}</AxesContainer>
   ) : null;
 };
 export default function TireInspection({navigation}) {
