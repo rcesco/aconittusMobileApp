@@ -44,64 +44,6 @@ export const ModalBody = styled.View`
 `;
 
 =======
-  background-color: #1583f2;
-`;
-
-export const ContainerQuestion = styled.View`
-  margin-right: 20px;
-`;
-
-export const List = styled.FlatList.attrs({
-  showVerticalScrollIndicator: false,
-})`
-  margin-top: 10px;
-  flex: 1;
-`;
-
-export const Question = styled.Text`
-  font-size: 20px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #fff;
-`;
-
-export const SelectData = styled(Button)`
-  margin-top: 0px;
-  height: 40px;
-`;
-
-export const ButtonModal = styled.TouchableOpacity`
-  margin-top: 10px;
-  min-width: 200px;
-  height: 46px;
-  background: #367fa9;
-  border-radius: 4px;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ModalContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-  margin: 20px;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 35px;
-  box-shadow: 30px 10px 10px #000;
-`;
-
-export const ModalOverContainer = styled.View`
-  flex: 1;
-`;
-
-export const ModalText = styled.Text`
-  font-size: 18px;
-  text-align: center;
-`;
-
-export const ButtonModalText = styled.Text`
-  font-size: 16px;
-  color: #fff;
 `;
 
 export const ModalBody = styled.View`
@@ -144,8 +86,6 @@ export const VehicleContainer = styled.View`
   justify-content: flex-start;
 `;
 
-<<<<<<< HEAD
-=======
 export const VehicleName = styled.Text`
   color: #fff;
   font-size: 16px;
@@ -169,8 +109,6 @@ export const ButtonSelectVehicleIcon = styled(Icon)`
   color: ${props => (props.isSelected ? '#FFFFFF' : '#616161')};
 `;
 
-<<<<<<< HEAD
-=======
 export const RadioContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
