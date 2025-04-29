@@ -506,11 +506,6 @@ export default function Checklist({route, navigation}) {
                           questions[currentQuestionIndex].idchecklist_question,
                         )
                       }
-                      value={
-                        textResponses[
-                          questions[currentQuestionIndex].idchecklist_question
-                        ]
-                      }
                       multiline={true}
                       numberOfLines={3}
                       textAlignVertical="top"
