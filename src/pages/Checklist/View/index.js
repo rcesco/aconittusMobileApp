@@ -498,6 +498,7 @@ export default function Checklist({route, navigation}) {
                     </RadioButton.Group>
 
                     <FormInput
+                      key={currentQuestionIndex}
                       autoCorrect={true}
                       placeholder="Detalhe o Problema"
                       onChangeText={e =>
@@ -508,7 +509,10 @@ export default function Checklist({route, navigation}) {
                           questions[currentQuestionIndex].idchecklist_question,
                         )
                       }
+                      value={questions[currentQuestionIndex].string}
                       multiline={true}
+                      numberOfLines={3}
+                      textAlignVertical="top"
                     />
                   </>
                 )}

@@ -269,7 +269,11 @@ export const SubmitButtonText = styled.Text`
 
 export const FormInput = styled(Input)`
   margin-bottom: 4px;
-  height: 40px;
+  min-height: 60px;
+  max-height: 120px;
   font-size: 12px;
   padding-horizontal: 4px;
+  text-align-vertical: top;
+  vertical-align: top;
+  flex-wrap: wrap;
 `;
