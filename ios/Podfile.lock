@@ -1140,6 +1140,9 @@ PODS:
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 17746ea (adjusts-checklist)
   - RNCPicker (2.11.0):
     - React-Core
   - RNDateTimePicker (8.3.0):
@@ -1149,10 +1152,13 @@ PODS:
   - RNGestureHandler (2.25.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
+<<<<<<< HEAD
     - React-Core
   - RNScreens (3.37.0):
 =======
   - RNPermissions (5.4.1):
+=======
+>>>>>>> 17746ea (adjusts-checklist)
     - React-Core
   - RNScreens (3.35.0):
 >>>>>>> b2fbf83 (adjusting-dss)
@@ -1494,7 +1500,6 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 40ffda97d071a98a10fdca4fa97e3977102ccd14
   RNDeviceInfo: 6192a9c9167e256803e554038b22b3b2b40163dc
   RNGestureHandler: 93938f47763bf404d697f7c5d63c280ae4d732e4
-  RNPermissions: a8fc7bd33554f070c7ea0d749ae809c0b76cad32
   RNScreens: 69850d4519d95b9359cec15a67bb5f9d0bd75262
 >>>>>>> b2fbf83 (adjusting-dss)
   RNVectorIcons: 04d49881dab53fb3397b1129085271d9d21885c1
