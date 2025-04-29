@@ -175,7 +175,6 @@ export default function Checklist({route, navigation}) {
         responses[index].string = string;
       }
     });
-
     setShowDatePicker(prevState => ({
       ...prevState,
       [id]: false,
@@ -509,7 +508,11 @@ export default function Checklist({route, navigation}) {
                           questions[currentQuestionIndex].idchecklist_question,
                         )
                       }
-                      value={questions[currentQuestionIndex].string}
+                      value={
+                        textResponses[
+                          questions[currentQuestionIndex].idchecklist_question
+                        ]
+                      }
                       multiline={true}
                       numberOfLines={3}
                       textAlignVertical="top"
@@ -634,6 +637,11 @@ export default function Checklist({route, navigation}) {
                       )
                     }
                     multiline={true}
+                    value={
+                      textResponses[
+                        questions[currentQuestionIndex].idchecklist_question
+                      ]
+                    }
                   />
                 )}
 
