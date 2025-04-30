@@ -369,11 +369,8 @@ export default function Checklist({route, navigation}) {
       const hasRadioSelection =
         radioResponses[questionId] !== undefined &&
         radioResponses[questionId] !== null;
-      const hasTextDetail =
-        textResponses[questionId] !== undefined &&
-        textResponses[questionId]?.trim() !== '';
 
-      return hasRadioSelection || hasTextDetail;
+      return hasRadioSelection;
     }
 
     if (questionType === 'date') {
