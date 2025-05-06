@@ -1,11 +1,24 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Alert, Modal, FlatList, Text} from 'react-native';
+import {
+  View,
+  Alert,
+  Modal,
+  Button,
+  FlatList,
+  PermissionsAndroid,
+  Platform,
+  Linking,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from '../../../services/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from 'react-native-device-info';
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import {ActivityIndicator} from 'react-native';
@@ -52,11 +65,18 @@ export default function PersonAssessmentView({route, navigation}) {
 
   const [disableForm, setDisableForm] = useState(false);
   const [responses, setResponses] = useState([]);
+  const [latitude, setLatitude] = useState([]);
+  const [longitude, setLongitude] = useState([]);
+  const [composition, setPerson] = useState('');
+  const [categoryPersonAssessment, setCategoryPersonAssessment] =
+    useState('composicao');
 
+  const [compositionsList, setPersonsList] = useState([]);
+  const [compositionListTmp, setPersonsListTmp] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [dates, setDates] = useState({});
   const [radioResponses, setRadioResponses] = useState({});
-
+  const [ip, setIp] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState({});
   const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
@@ -99,14 +119,14 @@ export default function PersonAssessmentView({route, navigation}) {
   }
 
   function selectPerson(item) {
-    if (item.has_person_assessment_performed) {
+    if (item.has_person_assessment_performed !== null) {
       return Alert.alert(
         `A Avaliação para ${item.name} já está respondida, selecione outro colaborador.`,
       );
     }
 
     setPersonName(item.name);
-    setPersonId(item.idperson);
+    setPersonId(item.id);
     setModalVisible(false);
   }
 
@@ -179,20 +199,13 @@ export default function PersonAssessmentView({route, navigation}) {
     if (!disableForm) {
       setDisableForm(true);
 
-      let postParams = {};
-      if (typePersonAssessment === 'avaliacaopessoa') {
-        postParams = {
-          idperson_assessment: idPersonAssessment,
-          responses,
-          idperson: personId,
-        };
-      } else {
-        postParams = {
-          idperson_assessment: idPersonAssessment,
-          responses,
-          idperson: null,
-        };
-      }
+      const postParams = {
+        idPersonAssessmentView,
+        responses,
+        latitude,
+        longitude,
+        composition,
+      };
 
       let fullResponse = true;
 
@@ -223,7 +236,8 @@ export default function PersonAssessmentView({route, navigation}) {
             Alert.alert('', 'Obrigado por Realizar esta Avaliação!', [
               {text: 'OK'},
             ]);
-            navigation.navigate('PersonAssessmentList');
+            handleDataPerson();
+            initQuestions();
             setDisableForm(false);
           }
         } catch (error) {
@@ -320,6 +334,37 @@ export default function PersonAssessmentView({route, navigation}) {
   return (
     <Background>
       <Container>
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <ModalBody>
+            <ModalButton onPress={() => setModalVisible(false)}>
+              <ModalButtonText>Fechar</ModalButtonText>
+            </ModalButton>
+            <FormInput
+              editable={true}
+              onChangeText={e => changePerson(e)}
+              placeholder="Pesquisar"
+            />
+            <FlatList
+              data={rowsPerson}
+              keyExtractor={comp => comp.idperson}
+              renderItem={({item}) => (
+                <PersonContainer
+                  isAnswered={item.has_person_assessment_performed !== null}>
+                  <ButtonSelectPerson
+                    isAnswered={item.has_person_assessment_performed !== null}
+                    onPress={() => selectPerson(item)}>
+                    <ButtonSelectPersonIcon name="check" size={20} />
+                  </ButtonSelectPerson>
+                  <PersonName>
+                    {item.has_person_assessment_performed === null
+                      ? `${item.name} - Não respondido`
+                      : `${item.name} - Respondido`}
+                  </PersonName>
+                </PersonContainer>
+              )}
+            />
+          </ModalBody>
+        </Modal>
         {typePersonAssessment === 'avaliacaopessoa' ? (
           <>
             <FormInput value={personName} editable={false} />
@@ -369,21 +414,20 @@ export default function PersonAssessmentView({route, navigation}) {
                       }>
                       {questions[currentQuestionIndex].answers.map(i => (
                         <RadioContainer
-                          key={i.idperson_assessment_answer}
+                          key={i.value}
                           onPress={() =>
                             handleResponses(
-                              i.idperson_assessment_answer,
+                              i.value,
                               null,
                               null,
                               questions[currentQuestionIndex]
                                 .idperson_assessment_question,
                             )
                           }>
-                          <StyledRadioButton
-                            value={i.idperson_assessment_answer}>
+                          <StyledRadioButton value={i.value}>
                             <InnerCircle />
                           </StyledRadioButton>
-                          <RadioText>{i.description}</RadioText>
+                          <RadioText>{i.label}</RadioText>
                         </RadioContainer>
                       ))}
                     </RadioButton.Group>
@@ -620,38 +664,6 @@ export default function PersonAssessmentView({route, navigation}) {
             </View>
           </View>
         </View>
-
-        <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <ModalBody>
-            <ModalButton onPress={() => setModalVisible(false)}>
-              <ModalButtonText>Fechar</ModalButtonText>
-            </ModalButton>
-            <FormInput
-              editable={true}
-              onChangeText={e => changePerson(e)}
-              placeholder="Pesquisar"
-            />
-            <FlatList
-              data={rowsPerson}
-              keyExtractor={comp => comp.idperson}
-              renderItem={({item}) => (
-                <PersonContainer
-                  isAnswered={item.has_person_assessment_performed}>
-                  <ButtonSelectPerson
-                    isAnswered={item.has_person_assessment_performed}
-                    onPress={() => selectPerson(item)}>
-                    <ButtonSelectPersonIcon name="check" size={20} />
-                  </ButtonSelectPerson>
-                  <PersonName>
-                    {item.has_person_assessment_performed
-                      ? `${item.name} - Respondido`
-                      : `${item.name} - Não respondido`}
-                  </PersonName>
-                </PersonContainer>
-              )}
-            />
-          </ModalBody>
-        </Modal>
       </Container>
     </Background>
   );
