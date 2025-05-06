@@ -64,6 +64,10 @@ export default function Home({navigation}) {
     navigation.navigate('TireInspection');
   }
 
+  function handlePersonAssessment() {
+    navigation.navigate('PersonAssessmentList');
+  }
+
   function handleSignIn() {
     if (!user.signed) {
       Alert.alert('Você está deslogado! Por favor Faça o Login');
@@ -133,6 +137,13 @@ export default function Home({navigation}) {
           icon="tire"
           text="Inspeção de Pneus"
           color="#6A8043"
+        />
+
+        <HomeButton
+          onPress={() => handlePersonAssessment()}
+          icon="file-account-outline"
+          text="Avaliação de Pessoa"
+          color="#2A8043"
         />
       </ButtonsList>
     </Container>

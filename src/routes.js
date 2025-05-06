@@ -41,6 +41,8 @@ import Profile from './pages/Profile';
 
 /** TireInspection */
 import TireInspection from './pages/TireInspection';
+import PersonAssessmentList from './pages/PersonAssessment';
+import PersonAssessmentView from './pages/PersonAssessment/View';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -139,6 +141,16 @@ function HomeScreen() {
         name="TireInspection"
         component={TireInspection}
         options={TireInspection.navigationOptions}
+      />
+      <Stack.Screen
+        name="PersonAssessmentList"
+        component={PersonAssessmentList}
+        options={PersonAssessmentList.navigationOptions}
+      />
+      <Stack.Screen
+        name="PersonAssessmentView"
+        component={PersonAssessmentView}
+        options={PersonAssessmentView.navigationOptions}
       />
     </Stack.Navigator>
   );
