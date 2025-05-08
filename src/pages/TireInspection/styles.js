@@ -31,7 +31,6 @@ export const Background = styled.View`
 export const Container = styled.View`
   flex: 1;
   margin: 20px;
-<<<<<<< HEAD
 `;
 
 export const ModalBody = styled.View`
@@ -43,19 +42,6 @@ export const ModalBody = styled.View`
   flex: 1;
 `;
 
-=======
-`;
-
-export const ModalBody = styled.View`
-  margin: 20px;
-  background-color: rgba(64, 81, 137, 0.9);
-  border: 20px;
-  border-radius: 20px;
-  border-color: rgba(64, 81, 137, 0.9);
-  flex: 1;
-`;
-
->>>>>>> 9764c98 (tire inspection)
 export const ModalButtonSelect = styled(Button)`
   margin-top: 0px;
   height: 35px;
@@ -409,11 +395,7 @@ export const AxisVisualization = styled.View`
   height: ${wheelHeight - 10}px;
   width: 100%;
   justify-content: center;
-<<<<<<< HEAD
-  margin-top: 10%;
-=======
   margin-top: 2px;
->>>>>>> 9764c98 (tire inspection)
   padding-right: 5px;
 `;
 
@@ -423,11 +405,7 @@ export const AxleLine = styled.View`
   width: 90%; /* Ajustado para 90% da largura */
   background-color: #555;
   z-index: 1;
-<<<<<<< HEAD
-  left: 3%; /* Centralizado com 5% de margem */
-=======
   left: 5%; /* Centralizado com 5% de margem */
->>>>>>> 9764c98 (tire inspection)
   top: 50%;
   margin-top: -4px;
 `;
@@ -450,11 +428,6 @@ export const WheelGroup = styled.View`
 
 export const WheelContainer = styled.View`
   width: ${wheelWidth}px;
-<<<<<<< HEAD
-  min-width: 50px;
-  min-height: 100px;
-=======
->>>>>>> 9764c98 (tire inspection)
   height: ${wheelHeight}px;
   background-color: #e8f5e9;
   border: 2px solid #81c784;
@@ -492,9 +465,13 @@ export const Title = styled.Text`
   font-weight: bold;
   margin-bottom: 10px;
 <<<<<<< HEAD
+<<<<<<< HEAD
   color: #000;
 =======
 >>>>>>> 9764c98 (tire inspection)
+=======
+  color: #000;
+>>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
 `;
 
 export const Label = styled.Text`
@@ -505,15 +482,21 @@ export const Label = styled.Text`
 `;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
 export const StyledInput = styled.TextInput.attrs({
   placeholderTextColor: '#000',
   selectionColor: '#000',
 })`
   border: 1px solid #000;
+<<<<<<< HEAD
 =======
 export const StyledInput = styled.TextInput`
   border: 1px solid #ccc;
 >>>>>>> 9764c98 (tire inspection)
+=======
+>>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 12px;
