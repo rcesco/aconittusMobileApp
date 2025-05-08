@@ -324,6 +324,7 @@ export const Title = styled.Text`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: #000;
 `;
 
 export const Label = styled.Text`
@@ -333,8 +334,11 @@ export const Label = styled.Text`
   color: red;
 `;
 
-export const StyledInput = styled.TextInput`
-  border: 1px solid #ccc;
+export const StyledInput = styled.TextInput.attrs({
+  placeholderTextColor: '#000',
+  selectionColor: '#000',
+})`
+  border: 1px solid #000;
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 12px;
