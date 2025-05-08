@@ -91,6 +91,8 @@ export default function PersonAssessmentList({navigation}) {
       : setPersonAssessmentListTmp(testList);
   }
 
+  console.log(testListTmp);
+
   return (
     <Container>
       <FormInput
@@ -110,7 +112,8 @@ export default function PersonAssessmentList({navigation}) {
               <Infos>
                 <Name>{item.description.trim()}</Name>
               </Infos>
-              {item.idperson_assessment_performed !== null ? (
+              {item.idperson_assessment_performed !== null &&
+              item.type == 'autoavaliacao' ? (
                 <CheckPersonAssessmentIcon>
                   <Icon name="check" color="#FFF" size={20} />
                 </CheckPersonAssessmentIcon>
