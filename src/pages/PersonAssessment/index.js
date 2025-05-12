@@ -112,13 +112,10 @@ export default function PersonAssessmentList({navigation}) {
               <Infos>
                 <Name>{item.description.trim()}</Name>
               </Infos>
-              {item.idperson_assessment_performed !== null &&
-              item.type == 'autoavaliacao' ? (
+              {item.has_person_assessment_performed ?? (
                 <CheckPersonAssessmentIcon>
                   <Icon name="check" color="#FFF" size={20} />
                 </CheckPersonAssessmentIcon>
-              ) : (
-                <Name />
               )}
             </TopInfo>
           </PersonAssessmentButton>
