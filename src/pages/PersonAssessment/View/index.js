@@ -99,7 +99,7 @@ export default function PersonAssessmentView({route, navigation}) {
   }
 
   function selectPerson(item) {
-    if (item.has_person_assessment_performed !== null) {
+    if (item.has_person_assessment_performed) {
       return Alert.alert(
         `A Avaliação para ${item.name} já está respondida, selecione outro colaborador.`,
       );
@@ -636,16 +636,16 @@ export default function PersonAssessmentView({route, navigation}) {
               keyExtractor={comp => comp.idperson}
               renderItem={({item}) => (
                 <PersonContainer
-                  isAnswered={item.has_person_assessment_performed !== null}>
+                  isAnswered={item.has_person_assessment_performed}>
                   <ButtonSelectPerson
-                    isAnswered={item.has_person_assessment_performed !== null}
+                    isAnswered={item.has_person_assessment_performed}
                     onPress={() => selectPerson(item)}>
                     <ButtonSelectPersonIcon name="check" size={20} />
                   </ButtonSelectPerson>
                   <PersonName>
-                    {item.has_person_assessment_performed === null
-                      ? `${item.name} - Não respondido`
-                      : `${item.name} - Respondido`}
+                    {item.has_person_assessment_performed
+                      ? `${item.name} - Respondido`
+                      : `${item.name} - Não respondido`}
                   </PersonName>
                 </PersonContainer>
               )}
