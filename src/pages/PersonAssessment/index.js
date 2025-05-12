@@ -23,6 +23,9 @@ export default function PersonAssessmentList({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
 
   function handlePersonAssessment(personAssessmentItem) {
+    if (personAssessmentItem.has_person_assessment_performed) {
+      return Alert.alert('Você já respondeu esta avaliação.');
+    }
     navigation.navigate('PersonAssessmentView', {personAssessmentItem});
   }
 
@@ -112,11 +115,11 @@ export default function PersonAssessmentList({navigation}) {
               <Infos>
                 <Name>{item.description.trim()}</Name>
               </Infos>
-              {item.has_person_assessment_performed ?? (
+              {item.has_person_assessment_performed ? (
                 <CheckPersonAssessmentIcon>
                   <Icon name="check" color="#FFF" size={20} />
                 </CheckPersonAssessmentIcon>
-              )}
+              ) : null}
             </TopInfo>
           </PersonAssessmentButton>
         )}
