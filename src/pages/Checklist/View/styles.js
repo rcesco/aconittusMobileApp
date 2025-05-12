@@ -9,7 +9,7 @@ import DeviceInfo from 'react-native-device-info';
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
 const statusBarMargin = isIOS ? 60 : 0;
 
-export const Background = styled.View`
+export const Background = styled.ScrollView`
   flex: 1;
   background-color: #1583f2;
   padding-top: ${statusBarMargin}px;
@@ -277,3 +277,5 @@ export const FormInput = styled(Input)`
   vertical-align: top;
   flex-wrap: wrap;
 `;
+
+export const ContainerAllQuestion = styled.View``;

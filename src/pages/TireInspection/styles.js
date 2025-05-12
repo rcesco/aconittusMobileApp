@@ -255,7 +255,7 @@ export const AxisVisualization = styled.View`
   height: ${wheelHeight - 10}px;
   width: 100%;
   justify-content: center;
-  margin-top: 2px;
+  margin-top: 10%;
   padding-right: 5px;
 `;
 
@@ -265,7 +265,7 @@ export const AxleLine = styled.View`
   width: 90%; /* Ajustado para 90% da largura */
   background-color: #555;
   z-index: 1;
-  left: 5%; /* Centralizado com 5% de margem */
+  left: 3%; /* Centralizado com 5% de margem */
   top: 50%;
   margin-top: -4px;
 `;
@@ -288,6 +288,8 @@ export const WheelGroup = styled.View`
 
 export const WheelContainer = styled.View`
   width: ${wheelWidth}px;
+  min-width: 50px;
+  min-height: 100px;
   height: ${wheelHeight}px;
   background-color: #e8f5e9;
   border: 2px solid #81c784;
