@@ -23,7 +23,7 @@ export const HeaderContainer = styled.View`
   top: 10px;
   left: 7%;
   right: 7%;
-  height: 50px;
+  height: 11%;
   max-width: 86%;
 `;
 

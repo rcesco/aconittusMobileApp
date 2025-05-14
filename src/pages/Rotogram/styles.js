@@ -15,13 +15,13 @@ export const Background = styled.ScrollView`
 
 export const Container = styled.View`
   flex: 1;
+  padding: 0px;
 `;
 
 export const List = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })`
   margin-top: 20px;
-  flex: 1;
 `;
 
 export const ContainerQuestion = styled.View`
@@ -59,7 +59,7 @@ export const RotogramContainer = styled.TouchableOpacity`
 
 export const Name = styled.Text`
   font-size: 20px;
-  color: #333;
+  color: rgb(96, 95, 95);
   font-weight: bold;
   align-self: flex-start;
   margin: 0 10px;

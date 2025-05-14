@@ -50,6 +50,7 @@ import {
   StyledButton,
   StyledButtonText,
   QuestionContainer,
+  ContainerAllQuestion,
 } from './styles';
 
 export default function Checklist({route, navigation}) {
@@ -443,7 +444,7 @@ export default function Checklist({route, navigation}) {
           </Text>
         </View>
 
-        <View style={{flex: 1}}>
+        <ContainerAllQuestion>
           {questions.length > 0 && (
             <QuestionContainer
               isCurrent={true}
@@ -710,7 +711,7 @@ export default function Checklist({route, navigation}) {
               </SubmitQuestions>
             </View>
           </View>
-        </View>
+        </ContainerAllQuestion>
       </Container>
     </Background>
   );
