@@ -9,7 +9,7 @@ import DeviceInfo from 'react-native-device-info';
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
 const statusBarMargin = isIOS ? 60 : 0;
 
-export const Background = styled.ScrollView`
+export const Background = styled.View`
   flex: 1;
   background-color: #1583f2;
   padding-top: ${statusBarMargin}px;
@@ -106,33 +106,36 @@ export const ModalButtonText = styled.Text`
   font-size: 14px;
 `;
 
-export const CompositionContainer = styled.View`
+export const PersonContainer = styled.View`
   align-items: center;
-  margin: 0 20px 20px;
+  margin: 0 10px 10px;
   padding: 0px;
-  background-color: rgba(64, 81, 137, 0);
-  min-height: 40px;
+  min-height: 20px;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: left;
+  background-color: ${props => (props.isAnswered ? '#008000' : '#FF0000')};
+  border: 1px solid ${props => (props.isAnswered ? '#008080' : '#8B0000')};
 `;
 
-export const CompositionName = styled.Text`
+export const PersonName = styled.Text`
   color: #fff;
   font-size: 16px;
 `;
 
-export const ButtonSelectComposition = styled.TouchableOpacity`
-  height: 35px;
-  width: 35px;
-  background: #3577f1;
+export const ButtonSelectPerson = styled.TouchableOpacity`
+  height: 24px;
+  width: 24px;
+  background: ${props => (props.isAnswered ? '#FFFFFF' : '#FFFFFF')};
   border-radius: 4px;
-  margin-left: 20px;
+  border: 2px solid ${props => (props.isAnswered ? '#388E3C' : '#BDBDBD')};
+  justify-content: center;
   align-items: center;
+  margin-right: 8px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 `;
 
-export const ButtonSelectCompositionIcon = styled(Icon)`
-  color: #fff;
-  margin: 5px;
+export const ButtonSelectPersonIcon = styled(Icon)`
+  color: ${props => (props.isSelected ? '#FFFFFF' : '#616161')};
 `;
 
 export const RadioContainer = styled.TouchableOpacity`
@@ -277,5 +280,3 @@ export const FormInput = styled(Input)`
   vertical-align: top;
   flex-wrap: wrap;
 `;
-
-export const ContainerAllQuestion = styled.View``;

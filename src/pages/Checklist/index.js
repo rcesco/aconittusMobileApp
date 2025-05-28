@@ -19,30 +19,44 @@ import {Alert} from 'react-native';
 export default function ChecklistList({navigation}) {
   const [checklistList, setChecklistList] = useState([]);
   const [checklistListTmp, setChecklistListTmp] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   function handleChecklist(checklist) {
     navigation.navigate('Checklist', {checklist});
   }
 
   async function handleListing() {
+    setRefreshing(true);
     const netInfoState = await NetInfo.fetch();
     const isConnected = netInfoState.isConnected;
+
     if (isConnected) {
-      const response = await Api.get('/checklist/listForApp');
+      try {
+        const response = await Api.get('/checklist/listForApp');
+        const {data} = response.data;
 
-      const {data} = response.data;
-
-      await AsyncStorage.setItem('@ChecklistList', JSON.stringify(data));
-
-      setChecklistList(data);
-      setChecklistListTmp(data);
+        if (Array.isArray(data)) {
+          await AsyncStorage.setItem('@ChecklistList', JSON.stringify(data));
+          setChecklistList(data);
+          setChecklistListTmp(data);
+        } else {
+          throw new Error('Formato inválido de dados');
+        }
+      } catch (error) {
+        Alert.alert('Erro ao carregar os dados: ' + error);
+      }
     } else {
       Alert.alert(
         'Você está sem internet a lista de Checklists pode estar desatualizada!',
       );
       const data = await AsyncStorage.getItem('@ChecklistList');
-      setChecklistList(JSON.parse(data));
+      if (data) {
+        setChecklistList(JSON.parse(data));
+        setChecklistListTmp(JSON.parse(data));
+      }
     }
+
+    setRefreshing(false);
   }
 
   useEffect(() => {
@@ -90,11 +104,13 @@ export default function ChecklistList({navigation}) {
                 <Icon name="clipboard-list" size={40} color="#FFF" />
               </ChecklistIcon>
               <Infos>
-                <Name>{item.description}</Name>
+                <Name>{item.description.trim()}</Name>
               </Infos>
             </TopInfo>
           </ChecklistButton>
         )}
+        refreshing={refreshing}
+        onRefresh={handleListing}
       />
     </Container>
   );

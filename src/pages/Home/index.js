@@ -60,6 +60,14 @@ export default function Home({navigation}) {
     navigation.navigate('Rotogram');
   }
 
+  function handleTireInspection() {
+    navigation.navigate('TireInspection');
+  }
+
+  function handlePersonAssessment() {
+    navigation.navigate('PersonAssessmentList');
+  }
+
   function handleSignIn() {
     if (!user.signed) {
       Alert.alert('Você está deslogado! Por favor Faça o Login');
@@ -122,6 +130,20 @@ export default function Home({navigation}) {
           icon="book-open-page-variant"
           text="Manuais e Políticas"
           color="#6A80B9"
+        />
+
+        <HomeButton
+          onPress={() => handleTireInspection()}
+          icon="tire"
+          text="Inspeção de Pneus"
+          color="#6A8043"
+        />
+
+        <HomeButton
+          onPress={() => handlePersonAssessment()}
+          icon="file-account-outline"
+          text="Avaliação de Pessoa"
+          color="#2A8043"
         />
       </ButtonsList>
     </Container>

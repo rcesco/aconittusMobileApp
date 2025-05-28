@@ -1,24 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  View,
-  Alert,
-  Modal,
-  Button,
-  FlatList,
-  PermissionsAndroid,
-  Platform,
-  Linking,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
+import {View, Alert, Modal, FlatList, Text} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import Api from '../../../services/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from 'react-native-device-info';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import {ActivityIndicator} from 'react-native';
@@ -32,10 +19,10 @@ import {
   ModalButtonText,
   ModalBody,
   FormInput,
-  CompositionContainer,
-  CompositionName,
-  ButtonSelectComposition,
-  ButtonSelectCompositionIcon,
+  PersonContainer,
+  PersonName,
+  ButtonSelectPerson,
+  ButtonSelectPersonIcon,
   ModalButtonSelect,
   Background,
   SubmitButtonText,
@@ -50,25 +37,26 @@ import {
   StyledButton,
   StyledButtonText,
   QuestionContainer,
-  ContainerAllQuestion,
 } from './styles';
 
-export default function Checklist({route, navigation}) {
-  const [idChecklist, setIdChecklist] = useState('');
+export default function PersonAssessmentView({route, navigation}) {
+  const idPersonAssessment =
+    route.params.personAssessmentItem.idperson_assessment;
+  const typePersonAssessment = route.params.personAssessmentItem.type;
+
+  const [rowsPerson, setRowsPerson] = useState([]);
+  const [rowsPersonTmp, setRowsPersonTmp] = useState([]);
+  const [personName, setPersonName] = useState('');
+  const [personId, setPersonId] = useState('');
   const [questions, setQuestions] = useState([]);
+
   const [disableForm, setDisableForm] = useState(false);
   const [responses, setResponses] = useState([]);
-  const [latitude, setLatitude] = useState([]);
-  const [longitude, setLongitude] = useState([]);
-  const [composition, setComposition] = useState('');
-  const [categoryChecklist, setCategoryChecklist] = useState('composicao');
-  const [compositionName, setCompositionName] = useState([]);
-  const [compositionsList, setCompositionsList] = useState([]);
-  const [compositionListTmp, setCompositionsListTmp] = useState([]);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [dates, setDates] = useState({});
   const [radioResponses, setRadioResponses] = useState({});
-  const [ip, setIp] = useState([]);
+
   const [showDatePicker, setShowDatePicker] = useState({});
   const isIOS = DeviceInfo.getSystemName() === 'iOS';
 
@@ -81,19 +69,16 @@ export default function Checklist({route, navigation}) {
     const isConnected = netInfoState.isConnected;
     if (isConnected) {
       const response = await Api.get(
-        'checklist_question/appGetByChecklistId/' +
-          route.params.checklist.idchecklist,
+        `person_assessment_question/getByPersonAssessmentId/${idPersonAssessment}`,
         {
-          id: route.params.checklist.id,
+          id: idPersonAssessment,
         },
       );
-
-      setCategoryChecklist(route.params.checklist.category);
 
       const initChoises = [];
       response.data.data.map(item => {
         initChoises.push({
-          question: item.idchecklist_question,
+          question: item.idperson_assessment_question,
           choise: item.type === 'date' ? null : 0,
           date: item.type === 'date' ? new Date() : -1,
           string: item.type === 'date' ? null : -999,
@@ -104,50 +89,58 @@ export default function Checklist({route, navigation}) {
       setQuestions(response.data.data);
     } else {
       Alert.alert(
-        'Você está sem internet a lista de Checklists pode estar desatualizada!',
+        'Você está sem internet! A lista de Avaliação pode estar desatualizada!',
       );
       const data = await AsyncStorage.getItem(
-        `@ChecklistView${route.params.checklist.idchecklist}`,
+        `@PersonAssessmentView${idPersonAssessment}`,
       );
       JSON.parse(data);
     }
   }
 
-  function selectComposition(id, name) {
-    setCompositionName(name);
-    setComposition(id);
+  function selectPerson(item) {
+    if (item.has_person_assessment_performed) {
+      return Alert.alert(
+        `A Avaliação para ${item.name} já está respondida, selecione outro colaborador.`,
+      );
+    }
+
+    setPersonName(item.name);
+    setPersonId(item.idperson);
     setModalVisible(false);
   }
 
-  async function handleCompositions() {
+  async function handleDataPerson() {
     try {
-      start_date = moment().format('YYYY-MM-DD');
-      end_date = moment().format('YYYY-MM-DD');
-      const response = await Api.get(
-        `/vehicle_composition/get_by_dates/${start_date}/${end_date}`,
-      );
+      if (typePersonAssessment === 'avaliacaopessoa') {
+        const response = await Api.get(
+          `person/getPersonByPersonAssessmentId/${idPersonAssessment}`,
+          {
+            id: idPersonAssessment,
+          },
+        );
 
-      const {data} = response.data;
-
-      setCompositionsList(data);
-      setCompositionsListTmp(data);
+        setRowsPerson(response.data.data);
+        setRowsPersonTmp(response.data.data);
+      }
     } catch (error) {
       console.log('erro: ' + error);
-      throw error;
+      throw Alert.alert(`Erro: ${error}`);
     }
   }
 
   useEffect(() => {
     const focused = navigation.addListener('focus', () => {
-      setIdChecklist(route.params.checklist.idchecklist);
+      handleDataPerson();
       initQuestions();
-      handleCompositions();
     });
     return focused;
   });
 
   async function handleResponses(response, date, string, id) {
-    const index = questions.findIndex(q => q.idchecklist_question === id);
+    const index = questions.findIndex(
+      q => q.idperson_assessment_question === id,
+    );
     if (index !== -1) {
       setCurrentQuestionIndex(index);
     }
@@ -182,92 +175,24 @@ export default function Checklist({route, navigation}) {
     }));
   }
 
-  const checkLocationPermission = async () => {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (!granted) {
-        requestLocationPermission();
-      } else {
-        getCurrentLocation();
-      }
-    } else {
-      // No iOS, solicitamos a permissão diretamente usando o próprio Geolocation
-      Geolocation.requestAuthorization();
-      getCurrentLocation();
-    }
-  };
-
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Permissão para acessar localização',
-            message: 'O aplicativo precisa acessar sua localização',
-            buttonNeutral: 'Perguntar depois',
-            buttonNegative: 'Cancelar',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getCurrentLocation();
-        } else {
-          showPermissionAlert();
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    } else {
-      // No iOS, a permissão é solicitada automaticamente pela Geolocation API.
-      getCurrentLocation();
-    }
-  };
-
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      },
-      error => {
-        console.error(error);
-        if (Platform.OS === 'ios' && error.code === 1) {
-          showPermissionAlert();
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
-      },
-    );
-  };
-
-  const showPermissionAlert = () => {
-    Alert.alert(
-      'Permissão de Localização',
-      'As permissões de localização estão desativadas. Deseja abrir as configurações para ativá-las?',
-      [
-        {text: 'Cancelar', style: 'cancel'},
-        {text: 'Abrir Configurações', onPress: () => Linking.openSettings()},
-      ],
-    );
-  };
-
   async function handlePostResponses() {
     if (!disableForm) {
       setDisableForm(true);
 
-      const postParams = {
-        idChecklist,
-        responses,
-        latitude,
-        longitude,
-        composition,
-      };
+      let postParams = {};
+      if (typePersonAssessment === 'avaliacaopessoa') {
+        postParams = {
+          idperson_assessment: idPersonAssessment,
+          responses,
+          idperson: personId,
+        };
+      } else {
+        postParams = {
+          idperson_assessment: idPersonAssessment,
+          responses,
+          idperson: null,
+        };
+      }
 
       let fullResponse = true;
 
@@ -281,8 +206,8 @@ export default function Checklist({route, navigation}) {
         return true;
       });
 
-      if (categoryChecklist === 'composicao' && composition === '') {
-        Alert.alert('Você Precisa Selecionar a Composição');
+      if (typePersonAssessment === 'avaliacaopessoa' && personId === '') {
+        Alert.alert('Você precisa selecionar o Colaborador');
         setDisableForm(false);
         return;
       }
@@ -290,20 +215,20 @@ export default function Checklist({route, navigation}) {
       if (fullResponse) {
         try {
           const response = await Api.post(
-            '/checklist/postResponsesApp',
+            '/person_assessment/postResponsesApp',
             postParams,
           );
 
           if (response.status === 200) {
-            Alert.alert('', 'Obrigado por Realizar este Checklist!', [
+            Alert.alert('', 'Obrigado por Realizar esta Avaliação!', [
               {text: 'OK'},
             ]);
-            navigation.navigate('ChecklistList');
+            navigation.navigate('PersonAssessmentList');
             setDisableForm(false);
           }
         } catch (error) {
           Alert.alert(
-            'Ocorreu um Erro ao enviar o Checklist reporte ao Administrador!',
+            'Ocorreu um Erro ao enviar a Avaliação reporte ao Administrador!',
           );
           setDisableForm(false);
         }
@@ -312,14 +237,14 @@ export default function Checklist({route, navigation}) {
         setDisableForm(false);
       }
     } else {
-      Alert.alert('Aguarde Seu checklist está sendo enviado');
+      Alert.alert('Aguarde... Sua avaliação está sendo enviada');
     }
   }
 
-  async function changeComposition(filterq) {
-    const compositionTest = compositionListTmp.filter(
+  async function changePerson(filterq) {
+    const personTest = rowsPersonTmp.filter(
       e =>
-        e.composition
+        e.name
           .toLowerCase()
           .normalize('NFD')
           .replace(/[\u0300-\u036f]/g, '')
@@ -331,7 +256,7 @@ export default function Checklist({route, navigation}) {
               .replace(/[\u0300-\u036f]/g, ''),
           ) !== -1,
     );
-    setCompositionsList(compositionTest);
+    setRowsPerson(personTest);
   }
 
   const showDatepicker = questionId => {
@@ -340,10 +265,6 @@ export default function Checklist({route, navigation}) {
       [questionId]: true,
     }));
   };
-
-  useEffect(() => {
-    requestLocationPermission();
-  }, []);
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
@@ -393,47 +314,17 @@ export default function Checklist({route, navigation}) {
   };
 
   const answeredCount = questions.filter(q =>
-    isQuestionAnswered(q.idchecklist_question, q.type),
+    isQuestionAnswered(q.idperson_assessment_question, q.type),
   ).length;
 
   return (
     <Background>
       <Container>
-        <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <ModalBody>
-            <ModalButton onPress={() => setModalVisible(false)}>
-              <ModalButtonText>Fechar</ModalButtonText>
-            </ModalButton>
-            <FormInput
-              editable={true}
-              onChangeText={e => changeComposition(e)}
-              placeholder="Pesquisar"
-            />
-            <FlatList
-              data={compositionsList}
-              keyExtractor={comp => comp.idvehicle_composition}
-              renderItem={({item}) => (
-                <CompositionContainer>
-                  <CompositionName>{item.composition}</CompositionName>
-                  <ButtonSelectComposition
-                    onPress={() =>
-                      selectComposition(
-                        item.idvehicle_composition,
-                        item.composition,
-                      )
-                    }>
-                    <ButtonSelectCompositionIcon name="check" size={20} />
-                  </ButtonSelectComposition>
-                </CompositionContainer>
-              )}
-            />
-          </ModalBody>
-        </Modal>
-        {categoryChecklist === 'composicao' ? (
+        {typePersonAssessment === 'avaliacaopessoa' ? (
           <>
-            <FormInput value={compositionName} editable={false} />
+            <FormInput value={personName} editable={false} />
             <ModalButtonSelect onPress={() => setModalVisible(true)}>
-              <ModalButtonText>Selecionar Composição</ModalButtonText>
+              <ModalButtonText>Selecionar Colaborador</ModalButtonText>
             </ModalButtonSelect>
           </>
         ) : null}
@@ -444,12 +335,12 @@ export default function Checklist({route, navigation}) {
           </Text>
         </View>
 
-        <ContainerAllQuestion>
+        <View style={{flex: 1}}>
           {questions.length > 0 && (
             <QuestionContainer
               isCurrent={true}
               isAnswered={isQuestionAnswered(
-                questions[currentQuestionIndex].idchecklist_question,
+                questions[currentQuestionIndex].idperson_assessment_question,
                 questions[currentQuestionIndex].type,
               )}>
               <ContainerQuestion>
@@ -466,30 +357,33 @@ export default function Checklist({route, navigation}) {
                           value,
                           null,
                           null,
-                          questions[currentQuestionIndex].idchecklist_question,
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question,
                         )
                       }
                       value={
                         radioResponses[
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         ] || null
                       }>
                       {questions[currentQuestionIndex].answers.map(i => (
                         <RadioContainer
-                          key={i.value}
+                          key={i.idperson_assessment_answer}
                           onPress={() =>
                             handleResponses(
-                              i.value,
+                              i.idperson_assessment_answer,
                               null,
                               null,
                               questions[currentQuestionIndex]
-                                .idchecklist_question,
+                                .idperson_assessment_question,
                             )
                           }>
-                          <StyledRadioButton value={i.value}>
+                          <StyledRadioButton
+                            value={i.idperson_assessment_answer}>
                             <InnerCircle />
                           </StyledRadioButton>
-                          <RadioText>{i.label}</RadioText>
+                          <RadioText>{i.description}</RadioText>
                         </RadioContainer>
                       ))}
                     </RadioButton.Group>
@@ -497,18 +391,20 @@ export default function Checklist({route, navigation}) {
                     <FormInput
                       key={currentQuestionIndex}
                       autoCorrect={true}
-                      placeholder="Detalhe o Problema"
+                      placeholder="Comente a sua resposta"
                       onChangeText={e =>
                         handleResponses(
                           -1,
                           null,
                           e,
-                          questions[currentQuestionIndex].idchecklist_question,
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question,
                         )
                       }
                       value={
                         textResponses[
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         ]
                       }
                       multiline={true}
@@ -523,7 +419,8 @@ export default function Checklist({route, navigation}) {
                     <FormInput
                       value={
                         dates[
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         ]?.toLocaleDateString() || ''
                       }
                       placeholder="Não Selecionado Data"
@@ -533,21 +430,25 @@ export default function Checklist({route, navigation}) {
                       title="Selecionar Data"
                       onPress={() =>
                         showDatepicker(
-                          questions[currentQuestionIndex].idchecklist_question,
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question,
                         )
                       }>
                       Selecionar Data
                     </SelectData>
                     {showDatePicker[
-                      questions[currentQuestionIndex].idchecklist_question
+                      questions[currentQuestionIndex]
+                        .idperson_assessment_question
                     ] && (
                       <DateTimePicker
                         testID={
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         }
                         value={
                           dates[
-                            questions[currentQuestionIndex].idchecklist_question
+                            questions[currentQuestionIndex]
+                              .idperson_assessment_question
                           ] || new Date()
                         }
                         mode="date"
@@ -558,7 +459,7 @@ export default function Checklist({route, navigation}) {
                             selectedDate,
                             null,
                             questions[currentQuestionIndex]
-                              .idchecklist_question,
+                              .idperson_assessment_question,
                           )
                         }
                       />
@@ -571,11 +472,12 @@ export default function Checklist({route, navigation}) {
                     <FormInput
                       value={
                         dates[
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         ]
                           ? dates[
                               questions[currentQuestionIndex]
-                                .idchecklist_question
+                                .idperson_assessment_question
                             ].toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
@@ -589,21 +491,25 @@ export default function Checklist({route, navigation}) {
                       title="Selecionar Hora"
                       onPress={() =>
                         showDatepicker(
-                          questions[currentQuestionIndex].idchecklist_question,
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question,
                         )
                       }>
                       Selecionar Hora
                     </SelectData>
                     {showDatePicker[
-                      questions[currentQuestionIndex].idchecklist_question
+                      questions[currentQuestionIndex]
+                        .idperson_assessment_question
                     ] && (
                       <DateTimePicker
                         testID={
-                          questions[currentQuestionIndex].idchecklist_question
+                          questions[currentQuestionIndex]
+                            .idperson_assessment_question
                         }
                         value={
                           dates[
-                            questions[currentQuestionIndex].idchecklist_question
+                            questions[currentQuestionIndex]
+                              .idperson_assessment_question
                           ] || new Date()
                         }
                         mode="time"
@@ -614,7 +520,7 @@ export default function Checklist({route, navigation}) {
                             selectedDate,
                             null,
                             questions[currentQuestionIndex]
-                              .idchecklist_question,
+                              .idperson_assessment_question,
                           )
                         }
                       />
@@ -631,13 +537,15 @@ export default function Checklist({route, navigation}) {
                         null,
                         null,
                         e,
-                        questions[currentQuestionIndex].idchecklist_question,
+                        questions[currentQuestionIndex]
+                          .idperson_assessment_question,
                       )
                     }
                     multiline={true}
                     value={
                       textResponses[
-                        questions[currentQuestionIndex].idchecklist_question
+                        questions[currentQuestionIndex]
+                          .idperson_assessment_question
                       ]
                     }
                   />
@@ -711,12 +619,44 @@ export default function Checklist({route, navigation}) {
               </SubmitQuestions>
             </View>
           </View>
-        </ContainerAllQuestion>
+        </View>
+
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <ModalBody>
+            <ModalButton onPress={() => setModalVisible(false)}>
+              <ModalButtonText>Fechar</ModalButtonText>
+            </ModalButton>
+            <FormInput
+              editable={true}
+              onChangeText={e => changePerson(e)}
+              placeholder="Pesquisar"
+            />
+            <FlatList
+              data={rowsPerson}
+              keyExtractor={comp => comp.idperson}
+              renderItem={({item}) => (
+                <PersonContainer
+                  isAnswered={item.has_person_assessment_performed}>
+                  <ButtonSelectPerson
+                    isAnswered={item.has_person_assessment_performed}
+                    onPress={() => selectPerson(item)}>
+                    <ButtonSelectPersonIcon name="check" size={20} />
+                  </ButtonSelectPerson>
+                  <PersonName>
+                    {item.has_person_assessment_performed
+                      ? `${item.name} - Respondido`
+                      : `${item.name} - Não respondido`}
+                  </PersonName>
+                </PersonContainer>
+              )}
+            />
+          </ModalBody>
+        </Modal>
       </Container>
     </Background>
   );
 }
 
-Checklist.navigationOptions = {
-  title: 'Respondendo Checklist',
+PersonAssessmentView.navigationOptions = {
+  title: 'Respondendo Avaliação',
 };
