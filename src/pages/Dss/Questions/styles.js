@@ -14,7 +14,7 @@ export const Background = styled.ScrollView`
 
 export const Container = styled.View`
   flex: 1;
-  margin: 20px;
+  margin: 20px 20px 120px 20px;
 `;
 
 export const ContainerQuestion = styled.View`

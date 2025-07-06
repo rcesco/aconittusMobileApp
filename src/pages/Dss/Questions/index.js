@@ -1,146 +1,229 @@
 import React, {useState, useEffect} from 'react';
-import {View, Alert} from 'react-native';
+import {Alert, Image} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import {useNetInfo} from '@react-native-community/netinfo';
+import * as ImagePicker from 'react-native-image-picker';
+import {
+  check,
+  request,
+  openSettings,
+  PERMISSIONS,
+  RESULTS,
+} from 'react-native-permissions';
 
 import Api from '../../../services/api';
 
 import {
+  Background,
   Container,
   Question,
   SubmitQuestions,
   List,
   ContainerQuestion,
-  Background,
+  ButtonModal,
+  ButtonModalText,
 } from './styles';
 
 export default function Questions({route, navigation}) {
   const [idDss, setIdDss] = useState('');
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState([]);
+  const [photo, setPhoto] = useState(null);
   const netInfo = useNetInfo();
+
+  useEffect(() => {
+    const focus = navigation.addListener('focus', () => {
+      setIdDss(route.params.iddss);
+      initQuestions();
+    });
+    return focus;
+  }, [navigation]);
 
   async function initQuestions() {
     const response = await Api.get(
       '/dss_question/getByDssIdApp/' + route.params.iddss,
-      {
-        id: route.params.iddss,
-      },
     );
 
-    const initChoises = [];
-    response.data.data.map(item =>
-      initChoises.push({question: item.iddss_question, choise: 0}),
-    );
+    const initChoises = response.data.data.map(item => ({
+      question: item.iddss_question,
+      choise: 0,
+    }));
 
     setResponses(initChoises);
     setQuestions(response.data.data);
   }
 
-  useEffect(() => {
-    const focused = navigation.addListener('focus', () => {
-      setIdDss(route.params.iddss);
-      initQuestions();
-    });
-    return focused;
-  });
-
   function handleResponses(response, id) {
-    responses.forEach(function (value, index, arr) {
-      if (arr[index].question === id) {
-        responses[index].choise = response;
-      }
-    });
+    const updated = responses.map(r =>
+      r.question === id ? {...r, choise: response} : r,
+    );
+    setResponses(updated);
   }
 
   function handleSucess() {
     navigation.navigate('Home');
   }
 
-  async function handlePostResponses() {
-    const postParams = {
-      idDss,
-      responses,
+  async function takePhoto() {
+    const result = await check(PERMISSIONS.IOS.CAMERA);
+
+    switch (result) {
+      case RESULTS.UNAVAILABLE:
+        Alert.alert('Erro', 'A câmera não está disponível neste dispositivo.');
+        break;
+      case RESULTS.DENIED:
+        const permission = await request(PERMISSIONS.IOS.CAMERA);
+        if (permission === RESULTS.GRANTED) {
+          launchCameraWithPicker();
+        } else {
+          Alert.alert('Permissão necessária para usar a câmera.');
+        }
+        break;
+      case RESULTS.GRANTED:
+        launchCameraWithPicker();
+        break;
+      case RESULTS.BLOCKED:
+        Alert.alert(
+          'Permissão de Câmera Bloqueada',
+          'Você bloqueou o acesso à câmera. Vá até os Ajustes para ativar.',
+          [
+            {text: 'Cancelar', style: 'cancel'},
+            {
+              text: 'Abrir Ajustes',
+              onPress: () => openSettings(),
+            },
+          ],
+        );
+        break;
+    }
+  }
+
+  function launchCameraWithPicker() {
+    const options = {
+      title: 'Tirar Foto de Identificação',
+      saveToPhotos: false,
+      cameraType: 'front',
+      mediaType: 'photo',
+      includeBase64: true,
+      maxHeight: 800,
+      maxWidth: 800,
+      quality: 1,
     };
 
-    let fullResponse = true;
+    ImagePicker.launchCamera(options, response => {
+      if (response.didCancel) {
+        Alert.alert('Você precisa tirar a foto para iniciar o DSS');
+        return;
+      }
+
+      if (response.errorCode) {
+        Alert.alert(
+          'Erro ao acessar câmera',
+          response.errorMessage || 'Erro desconhecido',
+        );
+        return;
+      }
+
+      if (response.assets && response.assets[0]) {
+        const img = response.assets[0];
+        const image = {
+          base64: `data:image/jpeg;base64,${img.base64}`,
+          uri: img.uri,
+          type: img.type,
+          name: img.fileName || `foto_${Date.now()}.jpg`,
+        };
+        setPhoto(image);
+      } else {
+        Alert.alert('Erro ao capturar imagem. Tente novamente.');
+      }
+    });
+  }
+
+  async function handlePostResponses() {
+    if (!photo) {
+      Alert.alert('Você deve tirar uma foto antes de enviar!');
+      return;
+    }
+
+    const allAnswered = responses.every(item => item.choise !== 0);
+    if (!allAnswered) {
+      Alert.alert(
+        'Atenção',
+        'Você precisa responder todas as perguntas antes de enviar.',
+      );
+      return;
+    }
+
+    if (!netInfo.isConnected) {
+      Alert.alert('Você está sem conexão com a internet.');
+      return;
+    }
+
     let correctAnswers = 0;
 
     responses.forEach(item => {
-      if (item.choise === 0) {
-        fullResponse = false;
-      } else {
-        const question = questions.find(
-          q => q.iddss_question === item.question,
+      const question = questions.find(q => q.iddss_question === item.question);
+      if (question) {
+        const selected = question.answers.find(
+          ans => ans.value === item.choise,
         );
-        if (question) {
-          const selectedAnswer = question.answers.find(
-            ans => ans.value === item.choise,
-          );
-          if (selectedAnswer && selectedAnswer.correct) {
-            correctAnswers++;
-          }
-        }
+        if (selected?.correct) correctAnswers++;
       }
     });
 
-    responses.map(item => {
-      if (item.choise === 0) {
-        fullResponse = false;
-      }
-      return true;
-    });
+    const percentage = ((correctAnswers / questions.length) * 100).toFixed(2);
 
-    if (fullResponse) {
-      if (netInfo.isConnected) {
-        try {
-          const totalQuestions = questions.length;
-          const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(
-            2,
-          );
-          if (percentage >= route.params.percent) {
-            const response = await Api.post(
-              '/dss/postResponsesApp',
-              postParams,
-            );
+    try {
+      const payload = {
+        idDss,
+        responses,
+        photo: photo.base64, // Envio como base64
+      };
 
-            if (response.status === 200) {
-              Alert.alert(
-                'Resultado',
-                `Obrigado por participar do DSS desta Semana!\n\nSua pontuação: ${percentage}% de acerto`,
-                [{text: 'OK', onPress: () => handleSucess()}],
-              );
-            }
-          } else {
-            Alert.alert(
-              'Resultado',
-              `Você Não Atingiu a Porcentagem Necessária, por favor assista novamente!\n\nSua pontuação: ${percentage}% de acerto`,
-              [{text: 'OK', onPress: () => handleSucess()}],
-            );
-          }
-        } catch (error) {
-          Alert.alert(
-            'Ocorreu um Erro ao enviar o DSS reporte ao Administrador!',
-          );
-        }
-      } else {
-        Alert.alert('Você está sem conexão com a Internet');
+      const response = await Api.post('/dss/postResponsesApp', payload);
+
+      if (response.status === 200) {
+        const msg =
+          percentage >= route.params.percent
+            ? `Obrigado por participar do DSS!\n\nAcertos: ${percentage}%`
+            : `Você não atingiu a pontuação mínima.\n\nAcertos: ${percentage}%`;
+
+        Alert.alert('Resultado', msg, [{text: 'OK', onPress: handleSucess}]);
       }
-    } else {
-      Alert.alert(
-        'Alerta!',
-        'Você precisa selecionar pelo menos uma resposta para cada questão!',
-        [{text: 'OK', style: 'cancel'}],
-      );
+    } catch (err) {
+      Alert.alert('Erro', 'Falha ao enviar as respostas. Tente novamente.');
     }
+  }
+
+  if (!photo) {
+    return (
+      <Background>
+        <Container>
+          <ButtonModal onPress={takePhoto}>
+            <ButtonModalText>Tirar Foto para Iniciar</ButtonModalText>
+          </ButtonModal>
+        </Container>
+      </Background>
+    );
   }
 
   return (
     <Background>
       <Container>
+        <Image
+          source={{uri: photo.uri}}
+          style={{
+            width: 180,
+            height: 180,
+            borderRadius: 90,
+            alignSelf: 'center',
+            marginBottom: 20,
+          }}
+        />
+
         <List
           data={questions}
-          keyExtractor={question => question.iddss_question}
+          keyExtractor={item => String(item.iddss_question)}
           renderItem={({item}) => (
             <ContainerQuestion>
               <Question>{item.question}</Question>
@@ -154,10 +237,8 @@ export default function Questions({route, navigation}) {
             </ContainerQuestion>
           )}
         />
-        <SubmitQuestions
-          onPress={() => {
-            handlePostResponses();
-          }}>
+
+        <SubmitQuestions onPress={handlePostResponses}>
           Enviar Respostas
         </SubmitQuestions>
       </Container>
