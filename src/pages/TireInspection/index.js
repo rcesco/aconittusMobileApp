@@ -129,10 +129,14 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
                     axis.type === 'simples'
                       ? [axis.wheel[0]]
 <<<<<<< HEAD
+<<<<<<< HEAD
                       : [axis.wheel[0], axis.wheel[1]],
 =======
                       : [axis.wheel[0], axis.wheel[2]],
 >>>>>>> 9764c98 (tire inspection)
+=======
+                      : [axis.wheel[0], axis.wheel[1]],
+>>>>>>> 040f910 (tire inspection)
                     'left',
                     axis.type !== 'simples',
                   )}
@@ -140,10 +144,14 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
                     axis.type === 'simples'
                       ? [axis.wheel[1]]
 <<<<<<< HEAD
+<<<<<<< HEAD
                       : [axis.wheel[3], axis.wheel[2]],
 =======
                       : [axis.wheel[1], axis.wheel[3]],
 >>>>>>> 9764c98 (tire inspection)
+=======
+                      : [axis.wheel[3], axis.wheel[2]],
+>>>>>>> 040f910 (tire inspection)
                     'right',
                     axis.type !== 'simples',
                   )}
