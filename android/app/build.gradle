@@ -79,8 +79,8 @@ android {
         applicationId "com.aconittusmobileapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 32
-        versionName "6.2.1"
+        versionCode 35
+        versionName "6.2.3"
     }
     signingConfigs {
         debug {
