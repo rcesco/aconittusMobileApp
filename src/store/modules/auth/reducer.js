@@ -3,6 +3,9 @@ import {produce} from 'immer';
 const INITIAL_STATE = {
   user: null,
   id_user: null,
+  token: null,
+  person: null,
+  operation_types: null,
   signed: false,
   loading: false,
 };
@@ -11,10 +14,12 @@ export default function auth(state = INITIAL_STATE, action) {
   return produce(state, draft => {
     switch (action.type) {
       case '@auth/SIGN_IN_SUCCESS': {
+        console.log(action.payload);
         draft.user = action.payload.user;
         draft.id_user = action.payload.id_user;
         draft.token = action.payload.token;
         draft.person = action.payload.person;
+        draft.operation_types = action.payload.profile?.operation_types;
         draft.signed = true;
         draft.loading = false;
         break;
@@ -62,7 +67,7 @@ export default function auth(state = INITIAL_STATE, action) {
         break;
       }
       case '@user/UPDATE_PROFILE_SUCCESS': {
-        draft.signed = false;
+        draft.signed = true;
         break;
       }
       default:

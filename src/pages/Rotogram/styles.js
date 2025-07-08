@@ -7,7 +7,7 @@ import DeviceInfo from 'react-native-device-info';
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
 const statusBarMargin = isIOS ? 60 : 0;
 
-export const Background = styled.ScrollView`
+export const Background = styled.View`
   flex: 1;
   background-color: #1583f2;
   padding-top: ${statusBarMargin}px;
@@ -15,13 +15,13 @@ export const Background = styled.ScrollView`
 
 export const Container = styled.View`
   flex: 1;
-  padding: 0px;
 `;
 
 export const List = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })`
   margin-top: 20px;
+  flex: 1;
 `;
 
 export const ContainerQuestion = styled.View`
@@ -59,7 +59,7 @@ export const RotogramContainer = styled.TouchableOpacity`
 
 export const Name = styled.Text`
   font-size: 20px;
-  color: rgb(96, 95, 95);
+  color: #333;
   font-weight: bold;
   align-self: flex-start;
   margin: 0 10px;

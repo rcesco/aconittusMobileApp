@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import Button from '../../../components/Button';
 import DeviceInfo from 'react-native-device-info';
+import Input from '../../../components/Input';
 
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
 const statusBarMargin = isIOS ? 60 : 0;
 
-export const Background = styled.ScrollView`
+export const Background = styled.View`
   flex: 1;
   background-color: #1583f2;
   padding-top: ${statusBarMargin}px;
@@ -93,4 +94,10 @@ export const CheckIcon = styled.View`
   border: 15px;
   border-color: #02b1a0;
   align-self: flex-start;
+`;
+
+export const FormInput = styled(Input)`
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 10px;
 `;

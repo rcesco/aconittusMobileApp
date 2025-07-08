@@ -11,20 +11,18 @@ import {
 
 export default function HomeButton({text, icon, color, ...rest}) {
   const styles = StyleSheet.create({
-    button: {
+    iconBackground: {
       backgroundColor: color,
     },
-    text: {
-      color: '#fff',
-    },
   });
+
   return (
     <ButtonHome {...rest}>
-      <IconContainer style={styles.button} {...rest}>
-        <ButtonIcon name={icon} size={50} />
+      <IconContainer style={styles.iconBackground}>
+        <ButtonIcon name={icon} size={40} />
       </IconContainer>
       <TextContainer>
-        <ButtonText style={styles.text}>{text}</ButtonText>
+        <ButtonText>{text}</ButtonText>
       </TextContainer>
     </ButtonHome>
   );

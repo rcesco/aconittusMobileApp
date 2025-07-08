@@ -116,15 +116,16 @@ export function* lostPassword({payload}) {
 }
 
 export function setAuthParams({payload}) {
-  if (!payload || !payload.auth || !payload.auth.id_user) {
+  if (!payload || !payload.auth || !payload.auth.token) {
     return;
   }
 
-  const {user, id_user} = payload.auth;
-  if (user && id_user) {
-    Api.defaults.headers.user = user;
-    Api.defaults.headers.token = id_user;
-  }
+  const {token, id_user, person, operation_types} = payload.auth;
+
+  Api.defaults.headers.Authorization = `Bearer ${token}`;
+  Api.defaults.headers.user = id_user;
+  Api.defaults.headers.person = person;
+  Api.defaults.headers.operation_types = operation_types;
 }
 
 export default all([

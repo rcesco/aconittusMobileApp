@@ -7,12 +7,7 @@ const api = axios.create({
 });
 
 export const updateApiBaseURL = port => {
-<<<<<<< HEAD
   baseURL = `http://77.37.41.21:${port}/api/`;
-=======
-  baseURL = `http://77.37.41.21:${port}/api/`;
-
->>>>>>> 9764c98 (tire inspection)
   api.defaults.baseURL = baseURL;
 };
 

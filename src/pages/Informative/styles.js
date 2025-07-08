@@ -7,7 +7,7 @@ import DeviceInfo from 'react-native-device-info';
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
 const statusBarMargin = isIOS ? 60 : 0;
 
-export const Background = styled.ScrollView`
+export const Background = styled.View`
   flex: 1;
   background-color: #1583f2;
   padding-top: ${statusBarMargin}px;

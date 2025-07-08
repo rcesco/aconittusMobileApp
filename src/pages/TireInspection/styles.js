@@ -72,13 +72,6 @@ export const VehicleContainer = styled.View`
   justify-content: flex-start;
 `;
 
-export const VehicleName = styled.Text`
-  color: #fff;
-  font-size: 16px;
-  line-height: 24px;
-`;
-
->>>>>>> 9764c98 (tire inspection)
 export const ButtonSelectVehicle = styled.TouchableOpacity`
   height: 24px;
   width: 24px;
@@ -95,139 +88,6 @@ export const ButtonSelectVehicleIcon = styled(Icon)`
   color: ${props => (props.isSelected ? '#FFFFFF' : '#616161')};
 `;
 
-export const RadioContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-export const StyledRadioButton = styled(RadioButton)`
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
-  border-width: 2px;
-  border-color: ${props => (props.selected ? '#007BFF' : '#888')};
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-`;
-
-export const RadioText = styled.Text`
-  font-size: 16px;
-  color: #e0e0e0;
-`;
-
-export const InnerCircle = styled.View`
-  width: 14px;
-  height: 14px;
-  border-radius: 7px;
-  background-color: rgb(250, 251, 253);
-`;
-
-export const QuestionContainer = styled.View`
-  padding: 16px;
-  margin: 8px;
-  background-color: ${({isAnswered}) =>
-    isAnswered ? '#4169E1' : 'rgba(255,255,255,0.05)'};
-  border-radius: 8px;
-  border-width: ${({isCurrent}) => (isCurrent ? '2px' : '0px')};
-  border-color: ${({isCurrent}) => (isCurrent ? '#6200ee' : 'transparent')};
-`;
-
-export const currentQuestion = styled.View`
-  border-color: #6200ee;
-  border-width: 2px;
-`;
-
-export const answeredQuestion = styled.View`
-  background-color: #e8f5e9;
-`;
-
-export const navigationContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-top-width: 1px;
-  border-top-color: #e0e0e0;
-  gap: 8px;
-`;
-
-export const disabledButton = styled.View`
-  background-color: #e9ecef;
-`;
-
-export const disabledText = styled.Text`
-  color: #adb5bd;
-`;
-
-export const buttonText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  margin-horizontal: 8px;
-`;
-
-export const StyledButton = styled.TouchableOpacity`
-  flex: 1;
-  background-color: ${({isDisabled}) => (isDisabled ? '#e9ecef' : '#696969')};
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  margin-right: 2px;
-  margin-top: 2px;
-`;
-
-export const StyledButtonText = styled.Text`
-  color: ${({isDisabled}) => (isDisabled ? '#adb5bd' : 'white')};
-  font-weight: bold;
-  font-size: 14px;
-  margin-left: 3px;
-`;
-
-export const NavButton = styled.TouchableOpacity`
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 20px;
-  border-radius: 8px;
-  background-color: ${({isDisabled}) => (isDisabled ? '#e9ecef' : '#696969')};
-  margin-left: 2px;
-  margin-top: 2px;
-`;
-
-export const NavButtonText = styled.Text`
-  color: ${({isDisabled}) => (isDisabled ? '#adb5bd' : '#fff')};
-  font-weight: bold;
-  font-size: 14px;
-  margin-right: 3px;
-`;
-
-export const SubmitQuestions = styled.TouchableOpacity`
-  flex: 1;
-  background-color: #40e0d0;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 20px;
-  border-radius: 8px;
-  margin-left: 2px;
-  margin-top: 2px;
-  opacity: ${({disabled}) => (disabled ? 0.6 : 1)};
-`;
-
-export const SubmitButtonText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  margin-left: 2px;
-`;
-
->>>>>>> 9764c98 (tire inspection)
 export const FormInput = styled(Input)`
   margin-bottom: 4px;
   height: 40px;
@@ -371,7 +231,7 @@ export const AxesContainer = styled.ScrollView.attrs({
   background-color: #f8f9fa;
   border-radius: 8px;
   margin: 8px;
-  max-height: 500px;
+  max-height: ${screenHeight * 0.75}px;
 `;
 
 export const AxisContainer = styled.View`
@@ -466,14 +326,7 @@ export const Title = styled.Text`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-<<<<<<< HEAD
-<<<<<<< HEAD
   color: #000;
-=======
->>>>>>> 9764c98 (tire inspection)
-=======
-  color: #000;
->>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
 `;
 
 export const Label = styled.Text`
@@ -483,22 +336,11 @@ export const Label = styled.Text`
   color: red;
 `;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
 export const StyledInput = styled.TextInput.attrs({
   placeholderTextColor: '#000',
   selectionColor: '#000',
 })`
   border: 1px solid #000;
-<<<<<<< HEAD
-=======
-export const StyledInput = styled.TextInput`
-  border: 1px solid #ccc;
->>>>>>> 9764c98 (tire inspection)
-=======
->>>>>>> aaf6441 (ajuste modal e placeholder TireInspection)
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 12px;

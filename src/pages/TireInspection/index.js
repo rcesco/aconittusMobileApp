@@ -128,30 +128,14 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
                   {renderWheelGroup(
                     axis.type === 'simples'
                       ? [axis.wheel[0]]
-<<<<<<< HEAD
-<<<<<<< HEAD
                       : [axis.wheel[0], axis.wheel[1]],
-=======
-                      : [axis.wheel[0], axis.wheel[2]],
->>>>>>> 9764c98 (tire inspection)
-=======
-                      : [axis.wheel[0], axis.wheel[1]],
->>>>>>> 040f910 (tire inspection)
                     'left',
                     axis.type !== 'simples',
                   )}
                   {renderWheelGroup(
                     axis.type === 'simples'
                       ? [axis.wheel[1]]
-<<<<<<< HEAD
-<<<<<<< HEAD
                       : [axis.wheel[3], axis.wheel[2]],
-=======
-                      : [axis.wheel[1], axis.wheel[3]],
->>>>>>> 9764c98 (tire inspection)
-=======
-                      : [axis.wheel[3], axis.wheel[2]],
->>>>>>> 040f910 (tire inspection)
                     'right',
                     axis.type !== 'simples',
                   )}
@@ -166,13 +150,7 @@ const VehicleAxisVisualization = ({axes, onEditTire}) => {
   };
 
   return axes && axes.length > 0 ? (
-    <AxesContainer
-      style={{
-        minHeight: Math.min(calculateTotalHeight(), 500),
-        maxHeight: 500,
-      }}>
-      {renderAllAxes()}
-    </AxesContainer>
+    <AxesContainer>{renderAllAxes()}</AxesContainer>
   ) : null;
 };
 export default function TireInspection({navigation}) {

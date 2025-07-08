@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import DeviceInfo from 'react-native-device-info';
 
 const isIOS = DeviceInfo.getSystemName() === 'iOS';
-const statusBarMargin = isIOS ? 60 : 0;
+const statusBarMargin = isIOS ? 60 : 25;
 
 export const Container = styled.ScrollView`
   flex: 1;
@@ -12,58 +12,57 @@ export const Container = styled.ScrollView`
 `;
 
 export const ContainerImage = styled.View`
-  top: 60px;
-  bottom: 20px;
-  justify-content: 'center';
-  align-items: 'center';
+  margin-top: 40px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
   height: 100px;
 `;
 
 export const HeaderContainer = styled.View`
-  top: 10px;
-  left: 7%;
-  right: 7%;
-  height: 11%;
-  max-width: 86%;
+  margin: 20px 7%;
 `;
 
 export const HeaderTitle = styled.Text`
   color: #fff;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 22px;
 `;
 
 export const HeaderText = styled.Text`
-  top: 10px;
+  margin-top: 10px;
   color: #fff;
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 20px;
   text-align: justify;
 `;
 
 export const ButtonsList = styled.View`
-  top: 50px;
-  margin: 25px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding: 20px;
+  row-gap: 20px;
+  column-gap: 20px;
 `;
 
 export const ButtonHome = styled.TouchableOpacity`
   background-color: rgba(0, 0, 0, 0.1);
   height: 100px;
-  flex: 1;
-  margin: 10px 10px 0px 10px;
   border-radius: 15px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ButtonIcon = styled(Icon)`
   color: #fff;
-  padding-left: 80%;
+  align-self: flex-end;
+  margin-right: 10px;
 `;
 
 export const ButtonText = styled.Text`
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  margin-left: 10%;
+  margin-top: 10px;
 `;
