@@ -346,6 +346,20 @@ export default function Checklist({route, navigation}) {
   }, []);
 
   const goToNextQuestion = () => {
+    const currentQuestion = questions[currentQuestionIndex];
+    const isAnswered = isQuestionAnswered(
+      currentQuestion.idchecklist_question,
+      currentQuestion.type,
+    );
+
+    if (!isAnswered) {
+      Alert.alert(
+        'Atenção',
+        'Você precisa responder esta pergunta antes de continuar.',
+      );
+      return;
+    }
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       listRef.current?.scrollToIndex({
@@ -506,7 +520,11 @@ export default function Checklist({route, navigation}) {
                           questions[currentQuestionIndex].idchecklist_question,
                         )
                       }
-                      value={questions[currentQuestionIndex].string}
+                      value={
+                        textResponses[
+                          questions[currentQuestionIndex].idchecklist_question
+                        ]
+                      }
                       multiline={true}
                       numberOfLines={3}
                       textAlignVertical="top"
